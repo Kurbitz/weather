@@ -96,33 +96,30 @@ class Forecast extends StatelessWidget {
   }
 }
 
-class Weather extends StatefulWidget {
+class Weather extends StatelessWidget {
   const Weather({
     super.key,
   });
 
   @override
-  State<Weather> createState() => _WeatherState();
-}
-
-class _WeatherState extends State<Weather> {
-  @override
   Widget build(BuildContext context) {
+    var lastUpdated = context.select((WeatherProvider p) => p.lastUpdatedString);
     return Expanded(
       child: RefreshIndicator(
         onRefresh: () {
           return Future.delayed(
             const Duration(seconds: 1),
             () {
+              context.read<WeatherProvider>().update();
               return;
             },
           );
         },
         child: ListView(
           scrollDirection: Axis.vertical,
-          children: const [
+          children: [
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -132,15 +129,15 @@ class _WeatherState extends State<Weather> {
                       Flexible(
                         flex: 1,
                         child: Text(
-                          "13 July, 13:48",
-                          style: TextStyle(
+                          lastUpdated,
+                          style: const TextStyle(
                             fontSize: 20,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -180,10 +177,10 @@ class _WeatherState extends State<Weather> {
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Flexible(
