@@ -13,13 +13,19 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Search"),
-        leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go("/")),
-      ),
-      body: const Center(
-        child: Text("Search"),
+    return WillPopScope(
+      onWillPop: () async {
+        context.go("/");
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Search"),
+          leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => context.go("/")),
+        ),
+        body: const Center(
+          child: Text("Search"),
+        ),
       ),
     );
   }

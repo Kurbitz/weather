@@ -8,24 +8,30 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("About"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go("/"),
+    return WillPopScope(
+      onWillPop: () async {
+        context.go("/");
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("About"),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.go("/"),
+          ),
         ),
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Weather"),
-            SizedBox(
-              height: 20,
-            ),
-            Text("Version 1.0.0"),
-          ],
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Weather"),
+              SizedBox(
+                height: 20,
+              ),
+              Text("Version 1.0.0"),
+            ],
+          ),
         ),
       ),
     );
