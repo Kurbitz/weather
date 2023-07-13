@@ -20,6 +20,7 @@ class WeatherProvider extends ChangeNotifier {
 
   String get lastUpdatedString => _formatter.format(_lastUpdated);
   String get location => _location.name ?? "${_location.latitude}, ${_location.longitude}";
+  bool get isDaytime => weatherData?.weather.icon.endsWith("d") ?? true;
 
   // constructor
   WeatherProvider() : _lastUpdated = DateTime.now() {
@@ -30,6 +31,7 @@ class WeatherProvider extends ChangeNotifier {
   void update() async {
     _lastUpdated = DateTime.now();
     weatherData = await openWeatherMap.getWeather(_location);
+    print(weatherData!.weather.id);
     notifyListeners();
   }
 }
