@@ -40,6 +40,7 @@ dependencies:
   lottie: ^2.4.0
   intl: ^0.18.1
   envied: ^0.3.0+3
+  geolocator: ^9.0.2
 
 dev_dependencies:
   flutter_test:
