@@ -74,6 +74,15 @@ class WeatherLocation {
       longitude: json["lon"] + .0,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "lat": latitude,
+      "lon": longitude,
+      "name": name ?? "",
+    };
+  }
+
 }
 
 class Wind {
