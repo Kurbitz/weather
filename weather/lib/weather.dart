@@ -25,8 +25,8 @@ class WeatherData {
       location: WeatherLocation.fromJson(json["coord"]),
       weather: Weather.fromJson(json["weather"][0]),
       wind: Wind.fromJson(json["wind"]),
-      temperature: json["main"]["temp"],
-      feelsLike: json["main"]["feels_like"],
+      temperature: json["main"]["temp"] + .0,
+      feelsLike: json["main"]["feels_like"] + .0,
       pressure: json["main"]["pressure"],
       humidity: json["main"]["humidity"],
       lastUpdated: DateTime.now(),
@@ -70,8 +70,8 @@ class WeatherLocation {
 
   factory WeatherLocation.fromJson(Map<String, dynamic> json) {
     return WeatherLocation(
-      latitude: json["lat"],
-      longitude: json["lon"],
+      latitude: json["lat"] + .0,
+      longitude: json["lon"] + .0,
     );
   }
 }
@@ -87,7 +87,7 @@ class Wind {
 
   factory Wind.fromJson(Map<String, dynamic> json) {
     return Wind(
-      speed: json["speed"],
+      speed: json["speed"] + .0,
       direction: json["deg"],
     );
   }
