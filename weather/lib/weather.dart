@@ -83,6 +83,17 @@ class WeatherLocation {
     };
   }
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WeatherLocation &&
+          runtimeType == other.runtimeType &&
+          latitude == other.latitude &&
+          longitude == other.longitude &&
+          name == other.name;
+
+  @override
+  int get hashCode => latitude.hashCode ^ longitude.hashCode ^ name.hashCode;
 }
 
 class Wind {
