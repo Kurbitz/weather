@@ -1,6 +1,6 @@
 class WeatherData {
   final DateTime lastUpdated;
-  final Location location;
+  final WeatherLocation location;
   final Wind wind;
 
   final double temperature;
@@ -22,7 +22,7 @@ class WeatherData {
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
     return WeatherData(
-      location: Location.fromJson(json["coord"]),
+      location: WeatherLocation.fromJson(json["coord"]),
       weather: Weather.fromJson(json["weather"][0]),
       wind: Wind.fromJson(json["wind"]),
       temperature: json["main"]["temp"],
@@ -57,19 +57,19 @@ class Weather {
   }
 }
 
-class Location {
+class WeatherLocation {
   final double latitude;
   final double longitude;
   final String? name;
 
-  Location({
+  WeatherLocation({
     required this.latitude,
     required this.longitude,
     this.name,
   });
 
-  factory Location.fromJson(Map<String, dynamic> json) {
-    return Location(
+  factory WeatherLocation.fromJson(Map<String, dynamic> json) {
+    return WeatherLocation(
       latitude: json["lat"],
       longitude: json["lon"],
     );

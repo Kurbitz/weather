@@ -8,7 +8,7 @@ class OpenWeatherMap {
 
   OpenWeatherMap(this._apiKey);
 
-  Future<WeatherData> getWeather(Location location) async {
+  Future<WeatherData> getWeather(WeatherLocation location) async {
     final uri = Uri.parse(
         "$_apiUrlBase?lat=${location.latitude}&lon=${location.longitude}&appid=$_apiKey&units=metric");
     final response = await HttpClient().getUrl(uri).then((request) => request.close());
