@@ -9,7 +9,7 @@ import "weather.dart";
 import "openweathermap.dart";
 
 class WeatherProvider extends ChangeNotifier {
-  WeatherLocation _location = WeatherLocation(
+  WeatherLocation _currentLocation = WeatherLocation(
     latitude: 59.32,
     longitude: 18.07,
     name: "Stockholm",
@@ -18,14 +18,15 @@ class WeatherProvider extends ChangeNotifier {
   DateTime _lastUpdated;
   final _formatter = DateFormat("d MMMM HH:mm");
   WeatherData? weatherData;
-  late OpenWeatherMap openWeatherMap;
+  late OpenWeatherMap _openWeatherMap;
 
   String get lastUpdatedString => _formatter.format(_lastUpdated);
-  String get location => _location.name ?? "${_location.latitude}, ${_location.longitude}";
+  String get location =>
+      _currentLocation.name ?? "${_currentLocation.latitude}, ${_currentLocation.longitude}";
   bool get isDaytime => weatherData?.weather.icon.endsWith("d") ?? true;
 
   WeatherProvider() : _lastUpdated = DateTime.now() {
-    openWeatherMap = OpenWeatherMap(Env.OPENWEATHERMAP_API_KEY);
+    _openWeatherMap = OpenWeatherMap(Env.OPENWEATHERMAP_API_KEY);
     update();
     // Update every 10 minutes
     Timer.periodic(const Duration(minutes: 10), (timer) {
@@ -35,7 +36,7 @@ class WeatherProvider extends ChangeNotifier {
 
   void update() async {
     _lastUpdated = DateTime.now();
-    weatherData = await openWeatherMap.getWeather(_location);
+    weatherData = await _openWeatherMap.getWeather(_currentLocation);
     print(weatherData!.weather.id);
     notifyListeners();
   }
@@ -61,7 +62,7 @@ class WeatherProvider extends ChangeNotifier {
     }
 
     print(name);
-    _location = WeatherLocation(
+    _currentLocation = WeatherLocation(
       latitude: position.latitude,
       longitude: position.longitude,
       name: name,
