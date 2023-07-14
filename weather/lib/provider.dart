@@ -30,6 +30,7 @@ class WeatherProvider extends ChangeNotifier {
 
   WeatherProvider() : _lastUpdated = DateTime.now() {
     _openWeatherMap = OpenWeatherMap(Env.OPENWEATHERMAP_API_KEY);
+    updateLocation();
     getSavedFavorites().then((value) {
       favorites = value;
     });
