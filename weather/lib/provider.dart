@@ -15,6 +15,31 @@ class WeatherProvider extends ChangeNotifier {
     name: "Stockholm",
   );
 
+  DateTime _lastUpdated;
+  final _formatter = DateFormat("d MMMM HH:mm");
+  WeatherData? weatherData;
+  late OpenWeatherMap openWeatherMap;
+
+  String get lastUpdatedString => _formatter.format(_lastUpdated);
+  String get location => _location.name ?? "${_location.latitude}, ${_location.longitude}";
+  bool get isDaytime => weatherData?.weather.icon.endsWith("d") ?? true;
+
+  WeatherProvider() : _lastUpdated = DateTime.now() {
+    openWeatherMap = OpenWeatherMap(Env.OPENWEATHERMAP_API_KEY);
+    update();
+    // Update every 10 minutes
+    Timer.periodic(const Duration(minutes: 10), (timer) {
+      update();
+    });
+  }
+
+  void update() async {
+    _lastUpdated = DateTime.now();
+    weatherData = await openWeatherMap.getWeather(_location);
+    print(weatherData!.weather.id);
+    notifyListeners();
+  }
+
   void setLocation(Position position, Placemark? placemark) {
     String name;
     if (placemark != null) {
@@ -60,30 +85,5 @@ class WeatherProvider extends ChangeNotifier {
     }
 
     setLocation(position, placemark);
-  }
-
-  DateTime _lastUpdated;
-  final _formatter = DateFormat("d MMMM HH:mm");
-  WeatherData? weatherData;
-  late OpenWeatherMap openWeatherMap;
-
-  String get lastUpdatedString => _formatter.format(_lastUpdated);
-  String get location => _location.name ?? "${_location.latitude}, ${_location.longitude}";
-  bool get isDaytime => weatherData?.weather.icon.endsWith("d") ?? true;
-
-  WeatherProvider() : _lastUpdated = DateTime.now() {
-    openWeatherMap = OpenWeatherMap(Env.OPENWEATHERMAP_API_KEY);
-    update();
-    // Update every 10 minutes
-    Timer.periodic(const Duration(minutes: 10), (timer) {
-      update();
-    });
-  }
-
-  void update() async {
-    _lastUpdated = DateTime.now();
-    weatherData = await openWeatherMap.getWeather(_location);
-    print(weatherData!.weather.id);
-    notifyListeners();
   }
 }
