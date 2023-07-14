@@ -1,11 +1,9 @@
 import "dart:async";
-import "dart:io";
 import "package:flutter/material.dart";
 import "package:geocoding/geocoding.dart";
 import "package:geolocator/geolocator.dart";
 import "package:weather/env/env.dart";
 import "package:weather/location.dart";
-import "package:weather/provider.dart";
 import "package:intl/intl.dart";
 import "weather.dart";
 import "openweathermap.dart";
@@ -73,10 +71,13 @@ class WeatherProvider extends ChangeNotifier {
   String get location => _location.name ?? "${_location.latitude}, ${_location.longitude}";
   bool get isDaytime => weatherData?.weather.icon.endsWith("d") ?? true;
 
-  // constructor
   WeatherProvider() : _lastUpdated = DateTime.now() {
     openWeatherMap = OpenWeatherMap(Env.OPENWEATHERMAP_API_KEY);
     update();
+    // Update every 10 minutes
+    Timer.periodic(const Duration(minutes: 10), (timer) {
+      update();
+    });
   }
 
   void update() async {
