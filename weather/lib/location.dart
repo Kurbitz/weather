@@ -57,7 +57,8 @@ String getLongName(Placemark placemarkLocation, Position position) {
       placemarkLocation.administrativeArea!.isNotEmpty) {
     return "${placemarkLocation.street}, ${placemarkLocation.postalCode}, ${placemarkLocation.administrativeArea}";
   }
-  return "${position.longitude.toStringAsPrecision(3)}, ${position.latitude.toStringAsPrecision(3)}";
+
+  return coordinatesToDegree(position.longitude, position.latitude);
 }
 
 String getShortName(Placemark placemarkLocation, Position position) {
@@ -70,7 +71,19 @@ String getShortName(Placemark placemarkLocation, Position position) {
   } else if (placemarkLocation.administrativeArea != null &&
       placemarkLocation.administrativeArea!.isNotEmpty) {
     return placemarkLocation.administrativeArea!;
-  } else {
-    return "${position.latitude.toStringAsPrecision(3)}, ${position.longitude.toStringAsPrecision(3)}";
   }
+
+  return coordinatesToDegree(position.longitude, position.latitude);
+}
+
+String coordinatesToDegree(double longitude, double latitude) {
+  final latDirection = latitude.isNegative ? "S" : "N";
+  final lonDirection = longitude.isNegative ? "W" : "E";
+
+  final latDegree = latitude.truncate().abs();
+  final latMinute = ((latitude.abs() - latDegree) * 60).truncate();
+  final lonDegree = longitude.truncate().abs();
+  final lonMinute = ((longitude.abs() - lonDegree) * 60).truncate();
+
+  return "$latDegree° $latMinute' $latDirection, $lonDegree° $lonMinute' $lonDirection";
 }
