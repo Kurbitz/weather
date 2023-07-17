@@ -10,7 +10,7 @@ class WeatherPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var location = context.select((WeatherProvider p) => p.location);
+    var location = context.select((WeatherProvider p) => p.currentWeatherLocation.shortName);
     var weatherData = context.select((WeatherProvider p) => p.weatherData);
     return Scaffold(
       appBar: AppBar(

@@ -11,11 +11,12 @@ import "package:weather/openweathermap.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class WeatherProvider extends ChangeNotifier {
-  WeatherLocation _currentLocation = WeatherLocation(
-    latitude: 59.32,
-    longitude: 18.07,
-    name: "Stockholm",
-  );
+  WeatherLocation currentWeatherLocation = WeatherLocation(
+      latitude: 59.324,
+      longitude: 18.071,
+      shortName: "Stockholm",
+      longName: "Kvarteret Atlas, 111 29 Stockholm");
+
   static const _favoritesKey = "favorites";
   DateTime _lastUpdated;
   final _formatter = DateFormat("d MMMM HH:mm");
@@ -24,8 +25,6 @@ class WeatherProvider extends ChangeNotifier {
   List<WeatherLocation> favorites = [];
 
   String get lastUpdatedString => _formatter.format(_lastUpdated);
-  String get location =>
-      _currentLocation.name ?? "${_currentLocation.latitude}, ${_currentLocation.longitude}";
   bool get isDaytime => weatherData?.weather.icon.endsWith("d") ?? true;
 
   WeatherProvider() : _lastUpdated = DateTime.now() {
@@ -43,37 +42,19 @@ class WeatherProvider extends ChangeNotifier {
 
   void update() async {
     _lastUpdated = DateTime.now();
-    weatherData = await _openWeatherMap.getWeather(_currentLocation);
+    weatherData = await _openWeatherMap.getWeather(currentWeatherLocation);
     print(weatherData!.weather.id);
     notifyListeners();
   }
 
   void setLocation(Position position, Placemark? placemark) {
-    String name;
-    if (placemark != null) {
-      print(placemark.toJson());
-      if (placemark.subLocality != null && placemark.subLocality!.isNotEmpty) {
-        name = placemark.subLocality!;
-      } else if (placemark.locality != null && placemark.locality!.isNotEmpty) {
-        name = placemark.locality!;
-      } else if (placemark.street != null && placemark.street!.isNotEmpty) {
-        name = placemark.street!;
-      } else if (placemark.administrativeArea != null && placemark.administrativeArea!.isNotEmpty) {
-        name = placemark.administrativeArea!;
-      } else {
-        name = "${position.latitude}, ${position.longitude}";
-      }
-    } else {
-      name =
-          "${position.latitude.toStringAsPrecision(3)}, ${position.longitude.toStringAsPrecision(3)}";
-    }
-
-    print(name);
-    _currentLocation = WeatherLocation(
+    currentWeatherLocation = WeatherLocation(
       latitude: position.latitude,
       longitude: position.longitude,
-      name: name,
+      shortName: placemark == null ? "" : getShortName(placemark, position),
+      longName: placemark == null ? "" : getLongName(placemark, position),
     );
+
     update();
   }
 

@@ -1,6 +1,5 @@
 class WeatherData {
   final DateTime lastUpdated;
-  final WeatherLocation location;
   final Wind wind;
 
   final double temperature;
@@ -10,7 +9,6 @@ class WeatherData {
   final Weather weather;
 
   WeatherData({
-    required this.location,
     required this.weather,
     required this.temperature,
     required this.feelsLike,
@@ -22,7 +20,6 @@ class WeatherData {
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
     return WeatherData(
-      location: WeatherLocation.fromJson(json["coord"]),
       weather: Weather.fromJson(json["weather"][0]),
       wind: Wind.fromJson(json["wind"]),
       temperature: json["main"]["temp"] + .0,
@@ -58,28 +55,34 @@ class Weather {
 }
 
 class WeatherLocation {
-  final double latitude;
-  final double longitude;
-  final String? name;
+  final String latitude;
+  final String longitude;
+  final String shortName;
+  final String longName;
 
   WeatherLocation({
-    required this.latitude,
-    required this.longitude,
-    this.name,
-  });
+    required double latitude,
+    required double longitude,
+    required this.shortName,
+    required this.longName,
+  })  : latitude = latitude.toStringAsFixed(3),
+        longitude = longitude.toStringAsFixed(3);
 
   factory WeatherLocation.fromJson(Map<String, dynamic> json) {
     return WeatherLocation(
-      latitude: json["lat"] + .0,
-      longitude: json["lon"] + .0,
+      latitude: json["lat"],
+      longitude: json["lon"],
+      shortName: json["shortName"] ?? "",
+      longName: json["longName"] ?? "",
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "lat": latitude,
-      "lon": longitude,
-      "name": name ?? "",
+      "lat": num.parse(latitude),
+      "lon": num.parse(longitude),
+      "shortName": shortName,
+      "longName": longName,
     };
   }
 
@@ -90,10 +93,10 @@ class WeatherLocation {
           runtimeType == other.runtimeType &&
           latitude == other.latitude &&
           longitude == other.longitude &&
-          name == other.name;
+          shortName == other.shortName;
 
   @override
-  int get hashCode => latitude.hashCode ^ longitude.hashCode ^ name.hashCode;
+  int get hashCode => latitude.hashCode ^ longitude.hashCode ^ shortName.hashCode;
 }
 
 class Wind {
