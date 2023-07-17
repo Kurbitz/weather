@@ -6,8 +6,8 @@ import "package:geolocator/geolocator.dart";
 import "package:weather/env/env.dart";
 import "package:weather/location.dart";
 import "package:intl/intl.dart";
-import "weather.dart";
-import "openweathermap.dart";
+import "package:weather/weather.dart";
+import "package:weather/openweathermap.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class WeatherProvider extends ChangeNotifier {

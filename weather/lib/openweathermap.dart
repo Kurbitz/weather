@@ -1,5 +1,5 @@
 import "dart:io";
-import "weather.dart";
+import "package:weather/weather.dart";
 import "dart:convert";
 
 class OpenWeatherMap {
