@@ -26,6 +26,7 @@ class WeatherProvider extends ChangeNotifier {
 
   String get lastUpdatedString => _formatter.format(_lastUpdated);
   bool get isDaytime => weatherData?.weather.icon.endsWith("d") ?? true;
+  bool get locationIsFavorite => favorites.contains(currentWeatherLocation);
 
   WeatherProvider() : _lastUpdated = DateTime.now() {
     _openWeatherMap = OpenWeatherMap(Env.OPENWEATHERMAP_API_KEY);
@@ -76,6 +77,14 @@ class WeatherProvider extends ChangeNotifier {
     setLocation(position, placemark);
   }
 
+  void toggleFavorite() {
+    if (locationIsFavorite) {
+      removeFavorite(currentWeatherLocation);
+    } else {
+      addFavorite(currentWeatherLocation);
+    }
+  }
+
   Future<List<WeatherLocation>> getSavedFavorites() async {
     final prefs = await SharedPreferences.getInstance();
     List<String> savedFavorites;
@@ -114,7 +123,28 @@ class WeatherProvider extends ChangeNotifier {
       favorites = await getSavedFavorites();
     }
     favorites.add(location);
-    notifyListeners();
     saveFavorites();
+    notifyListeners();
+  }
+
+  void removeFavorite(WeatherLocation location) async {
+    if (!await favoritesAreSynced()) {
+      favorites = await getSavedFavorites();
+    }
+    favorites.remove(location);
+    saveFavorites();
+    notifyListeners();
+  }
+
+  void clearFavorites() async {
+    favorites = [];
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove(_favoritesKey);
+    notifyListeners();
+  }
+
+  void setWeatherLocation(WeatherLocation location) {
+    currentWeatherLocation = location;
+    update();
   }
 }

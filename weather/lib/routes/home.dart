@@ -12,10 +12,17 @@ class WeatherPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var location = context.select((WeatherProvider p) => p.currentWeatherLocation.shortName);
     var weatherData = context.select((WeatherProvider p) => p.weatherData);
+    var locationIsFavorite = context.select((WeatherProvider p) => p.locationIsFavorite);
     return Scaffold(
       appBar: AppBar(
         title: Text(location),
         actions: [
+          IconButton(
+            icon: Icon(locationIsFavorite ? Icons.favorite : Icons.favorite_border),
+            onPressed: () {
+              context.read<WeatherProvider>().toggleFavorite();
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () => context.go("/search"),
