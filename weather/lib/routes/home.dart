@@ -30,9 +30,28 @@ class WeatherPage extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () => context.go("/search"),
-          )
+            icon: const Icon(Icons.my_location),
+            onPressed: () => {
+              Provider.of<WeatherProvider>(context, listen: false).updateLocation().then(
+                (updateSucceeded) {
+                  if (updateSucceeded) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: const Text("Location updated"),
+                          backgroundColor: Theme.of(context).colorScheme.primary),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text("Location update failed"),
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                      ),
+                    );
+                  }
+                },
+              ),
+            },
+          ),
         ],
       ),
       drawer: Drawer(

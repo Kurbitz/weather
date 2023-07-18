@@ -61,14 +61,14 @@ class WeatherProvider extends ChangeNotifier {
     update();
   }
 
-  void updateLocation() async {
+  Future<bool> updateLocation() async {
     Position position;
     Placemark? placemark;
     try {
       position = await determinePosition();
     } catch (e) {
       print(e);
-      return;
+      return false;
     }
     try {
       placemark = await determinePlace(position);
@@ -77,6 +77,7 @@ class WeatherProvider extends ChangeNotifier {
     }
 
     setLocation(position, placemark);
+    return true;
   }
 
   void toggleFavorite() {
