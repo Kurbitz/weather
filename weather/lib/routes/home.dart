@@ -16,7 +16,21 @@ class WeatherPage extends StatelessWidget {
     var favorites = context.select((WeatherProvider p) => p.favorites);
     return Scaffold(
       appBar: AppBar(
-        title: Text(location),
+        title: Flex(
+          direction: Axis.horizontal,
+          children: [
+            Flexible(
+              child: Text(
+                location,
+                style: const TextStyle(
+                  fontSize: 22,
+                ),
+                overflow: TextOverflow.fade,
+                softWrap: true,
+              ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
             icon: locationIsFavorite
