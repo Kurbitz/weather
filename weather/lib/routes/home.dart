@@ -13,6 +13,7 @@ class WeatherPage extends StatelessWidget {
     var location = context.select((WeatherProvider p) => p.currentWeatherLocation.shortName);
     var weatherData = context.select((WeatherProvider p) => p.weatherData);
     var locationIsFavorite = context.select((WeatherProvider p) => p.locationIsFavorite);
+    var favorites = context.select((WeatherProvider p) => p.favorites);
     return Scaffold(
       appBar: AppBar(
         title: Text(location),
@@ -32,36 +33,8 @@ class WeatherPage extends StatelessWidget {
       drawer: Drawer(
         clipBehavior: Clip.antiAlias,
         elevation: 0,
-        child: ListView(
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-              ),
-              child: const Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Icon(
-                      Icons.wb_sunny,
-                      size: 50,
-                    ),
-                  ),
-                  Text(
-                    "Weather",
-                    style: TextStyle(
-                      fontSize: 30,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            ListTile(
-              title: const Text("About"),
-              leading: const Icon(Icons.info),
-              onTap: () => context.go("/about"),
-            ),
-          ],
+        child: WeatherDrawer(
+          favorites: favorites,
         ),
       ),
       body: DefaultTabController(
@@ -92,6 +65,102 @@ class WeatherPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class WeatherDrawer extends StatelessWidget {
+  const WeatherDrawer({
+    super.key,
+    required this.favorites,
+  });
+
+  final List<WeatherLocation> favorites;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        DrawerHeader(
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Icon(
+                  Icons.wb_sunny,
+                  size: 50,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              const Text(
+                "Weather",
+                style: TextStyle(
+                  fontSize: 30,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Favorites",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Wrap(
+          children: [
+            ...favorites
+                .map(
+                  (wl) => ListTile(
+                    title: Text(
+                      wl.shortName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.favorite),
+                      onPressed: () {
+                        context.read<WeatherProvider>().removeFavorite(wl);
+                      },
+                    ),
+                    tileColor:
+                        context.select((WeatherProvider p) => p.location.shortName) == wl.shortName
+                            ? Theme.of(context).colorScheme.primaryContainer
+                            : null,
+                    subtitle: Text(wl.longName),
+                    onTap: () {
+                      context.read<WeatherProvider>().setWeatherLocation(wl);
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+                .toList(),
+          ],
+        ),
+        const Divider(),
+        ListTile(
+          title: const Text("Clear"),
+          leading: const Icon(Icons.clear),
+          onTap: () => context.read<WeatherProvider>().clearFavorites(),
+        ),
+        ListTile(
+          title: const Text("About"),
+          leading: const Icon(Icons.info),
+          onTap: () => context.go("/about"),
+        ),
+        const Divider(
+          color: Colors.transparent,
+        ),
+      ],
     );
   }
 }
