@@ -48,29 +48,33 @@ Future<Placemark> determinePlace(Position position) async {
   return placemarks[0];
 }
 
-String getLongName(Placemark placemarkLocation, Position position) {
-  if (placemarkLocation.street != null &&
-      placemarkLocation.street!.isNotEmpty &&
-      placemarkLocation.postalCode != null &&
-      placemarkLocation.postalCode!.isNotEmpty &&
-      placemarkLocation.administrativeArea != null &&
-      placemarkLocation.administrativeArea!.isNotEmpty) {
-    return "${placemarkLocation.street}, ${placemarkLocation.postalCode}, ${placemarkLocation.administrativeArea}";
+String getLongName(Placemark? placemarkLocation, Position position) {
+  if (placemarkLocation != null) {
+    if (placemarkLocation.street != null &&
+        placemarkLocation.street!.isNotEmpty &&
+        placemarkLocation.postalCode != null &&
+        placemarkLocation.postalCode!.isNotEmpty &&
+        placemarkLocation.administrativeArea != null &&
+        placemarkLocation.administrativeArea!.isNotEmpty) {
+      return "${placemarkLocation.street}, ${placemarkLocation.postalCode}, ${placemarkLocation.administrativeArea}";
+    }
   }
 
   return coordinatesToDegree(position.longitude, position.latitude);
 }
 
-String getShortName(Placemark placemarkLocation, Position position) {
-  if (placemarkLocation.subLocality != null && placemarkLocation.subLocality!.isNotEmpty) {
-    return placemarkLocation.subLocality!;
-  } else if (placemarkLocation.locality != null && placemarkLocation.locality!.isNotEmpty) {
-    return placemarkLocation.locality!;
-  } else if (placemarkLocation.street != null && placemarkLocation.street!.isNotEmpty) {
-    return placemarkLocation.street!;
-  } else if (placemarkLocation.administrativeArea != null &&
-      placemarkLocation.administrativeArea!.isNotEmpty) {
-    return placemarkLocation.administrativeArea!;
+String getShortName(Placemark? placemarkLocation, Position position) {
+  if (placemarkLocation != null) {
+    if (placemarkLocation.subLocality != null && placemarkLocation.subLocality!.isNotEmpty) {
+      return placemarkLocation.subLocality!;
+    } else if (placemarkLocation.locality != null && placemarkLocation.locality!.isNotEmpty) {
+      return placemarkLocation.locality!;
+    } else if (placemarkLocation.street != null && placemarkLocation.street!.isNotEmpty) {
+      return placemarkLocation.street!;
+    } else if (placemarkLocation.administrativeArea != null &&
+        placemarkLocation.administrativeArea!.isNotEmpty) {
+      return placemarkLocation.administrativeArea!;
+    }
   }
 
   return coordinatesToDegree(position.longitude, position.latitude);

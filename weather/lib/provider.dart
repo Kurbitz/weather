@@ -52,8 +52,8 @@ class WeatherProvider extends ChangeNotifier {
     currentWeatherLocation = WeatherLocation(
       latitude: position.latitude,
       longitude: position.longitude,
-      shortName: placemark == null ? "" : getShortName(placemark, position),
-      longName: placemark == null ? "" : getLongName(placemark, position),
+      shortName: getShortName(placemark, position),
+      longName: getLongName(placemark, position),
     );
 
     update();
