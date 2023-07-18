@@ -189,17 +189,6 @@ class WeatherDrawer extends StatelessWidget {
   }
 }
 
-class Forecast extends StatelessWidget {
-  const Forecast({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
-
 class Weather extends StatelessWidget {
   const Weather({
     super.key,
@@ -291,5 +280,16 @@ class Weather extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class Forecast extends StatelessWidget {
+  const Forecast({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }
