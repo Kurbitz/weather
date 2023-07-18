@@ -19,7 +19,12 @@ class WeatherPage extends StatelessWidget {
         title: Text(location),
         actions: [
           IconButton(
-            icon: Icon(locationIsFavorite ? Icons.favorite : Icons.favorite_border),
+            icon: locationIsFavorite
+                ? Icon(
+                    Icons.favorite,
+                    color: Theme.of(context).colorScheme.primary,
+                  )
+                : const Icon(Icons.favorite_border),
             onPressed: () {
               context.read<WeatherProvider>().toggleFavorite();
             },
