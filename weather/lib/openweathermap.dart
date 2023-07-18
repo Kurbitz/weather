@@ -1,22 +1,37 @@
 import "dart:io";
-import "package:weather/weather.dart";
 import "dart:convert";
+import "package:weather/weather.dart";
 
 class OpenWeatherMap {
   final String _apiKey;
-  final String _apiUrlBase = "https://api.openweathermap.org/data/2.5/weather";
   final String _host = "api.openweathermap.org";
-  final String _basePath = "data/2.5";
 
   OpenWeatherMap(this._apiKey);
 
-  Future<WeatherData> getWeather(WeatherLocation location) async {
-    final uri = Uri.parse(
-        "$_apiUrlBase?lat=${location.latitude}&lon=${location.longitude}&appid=$_apiKey&units=metric");
-    final response = await HttpClient().getUrl(uri).then((request) => request.close());
-    final responseBody = await response.transform(const Utf8Decoder()).join();
-    final json = jsonDecode(responseBody);
-    return WeatherData.fromJson(json);
+  // TODO: Add error handling
+  Future<WeatherData> getCurrentWeather(WeatherLocation location) async {
+    final uri = Uri(
+      scheme: "https",
+      host: _host,
+      path: "data/2.5/weather",
+      queryParameters: {
+        "lat": location.latitude,
+        "lon": location.longitude,
+        "appid": _apiKey,
+        "units": "metric",
+      },
+    );
+
+    try {
+      final response = await HttpClient().getUrl(uri).then((request) => request.close());
+      final responseBody = await response.transform(const Utf8Decoder()).join();
+      final json = jsonDecode(responseBody);
+      print(json);
+      return WeatherData.fromJson(json);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 
   Future<String?> getReverseGeocoding(double latitude, double longitude) async {

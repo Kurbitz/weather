@@ -45,7 +45,7 @@ class WeatherProvider extends ChangeNotifier {
 
   void update() async {
     _lastUpdated = DateTime.now();
-    weatherData = await _openWeatherMap.getWeather(_currentWeatherLocation);
+    weatherData = await _openWeatherMap.getCurrentWeather(_currentWeatherLocation);
     print(weatherData!.weather.id);
     notifyListeners();
   }
