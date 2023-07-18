@@ -50,11 +50,21 @@ class WeatherProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setLocation(Position position, Placemark? placemark) {
+  void setLocation(Position position, Placemark? placemark) async {
+    String? placeName;
+    try {
+      placeName = await _openWeatherMap.getReverseGeocoding(position.latitude, position.longitude);
+    } catch (e) {
+      print(e);
+      placeName = coordinatesToDegree(position.latitude, position.longitude);
+    }
+
     _currentWeatherLocation = WeatherLocation(
       latitude: position.latitude,
       longitude: position.longitude,
-      shortName: getShortName(placemark, position),
+      shortName: getShortName(placemark, position) ??
+          placeName ??
+          coordinatesToDegree(position.latitude, position.longitude),
       longName: getLongName(placemark, position),
     );
 

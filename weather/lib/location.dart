@@ -60,10 +60,10 @@ String getLongName(Placemark? placemarkLocation, Position position) {
     }
   }
 
-  return coordinatesToDegree(position.longitude, position.latitude);
+  return coordinatesToDegree(position.latitude, position.longitude);
 }
 
-String getShortName(Placemark? placemarkLocation, Position position) {
+String? getShortName(Placemark? placemarkLocation, Position position) {
   if (placemarkLocation != null) {
     if (placemarkLocation.subLocality != null && placemarkLocation.subLocality!.isNotEmpty) {
       return placemarkLocation.subLocality!;
@@ -71,16 +71,13 @@ String getShortName(Placemark? placemarkLocation, Position position) {
       return placemarkLocation.locality!;
     } else if (placemarkLocation.street != null && placemarkLocation.street!.isNotEmpty) {
       return placemarkLocation.street!;
-    } else if (placemarkLocation.administrativeArea != null &&
-        placemarkLocation.administrativeArea!.isNotEmpty) {
-      return placemarkLocation.administrativeArea!;
     }
   }
 
-  return coordinatesToDegree(position.longitude, position.latitude);
+  return null;
 }
 
-String coordinatesToDegree(double longitude, double latitude) {
+String coordinatesToDegree(double latitude, double longitude) {
   final latDirection = latitude.isNegative ? "S" : "N";
   final lonDirection = longitude.isNegative ? "W" : "E";
 
