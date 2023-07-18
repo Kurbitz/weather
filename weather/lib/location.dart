@@ -86,8 +86,11 @@ String coordinatesToDegree(double longitude, double latitude) {
 
   final latDegree = latitude.truncate().abs();
   final latMinute = ((latitude.abs() - latDegree) * 60).truncate();
+  final latSecond = ((((latitude.abs() - latDegree) * 60) - latMinute) * 60).truncate();
+
   final lonDegree = longitude.truncate().abs();
   final lonMinute = ((longitude.abs() - lonDegree) * 60).truncate();
+  final lonSecond = ((((longitude.abs() - lonDegree) * 60) - lonMinute) * 60).truncate();
 
-  return "$latDegree° $latMinute' $latDirection, $lonDegree° $lonMinute' $lonDirection";
+  return "$latDegree°$latMinute'$latSecond\"$latDirection $lonDegree°$lonMinute'$lonSecond\"$lonDirection";
 }
