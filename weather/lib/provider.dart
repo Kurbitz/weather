@@ -11,11 +11,13 @@ import "package:weather/openweathermap.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class WeatherProvider extends ChangeNotifier {
-  WeatherLocation currentWeatherLocation = WeatherLocation(
+  WeatherLocation _currentWeatherLocation = WeatherLocation(
       latitude: 59.324,
       longitude: 18.071,
       shortName: "Stockholm",
       longName: "Kvarteret Atlas, 111 29 Stockholm");
+
+  WeatherLocation get location => _currentWeatherLocation;
 
   static const _favoritesKey = "favorites";
   DateTime _lastUpdated;
@@ -26,7 +28,7 @@ class WeatherProvider extends ChangeNotifier {
 
   String get lastUpdatedString => _formatter.format(_lastUpdated);
   bool get isDaytime => weatherData?.weather.icon.endsWith("d") ?? true;
-  bool get locationIsFavorite => favorites.contains(currentWeatherLocation);
+  bool get locationIsFavorite => favorites.contains(_currentWeatherLocation);
 
   WeatherProvider() : _lastUpdated = DateTime.now() {
     _openWeatherMap = OpenWeatherMap(Env.OPENWEATHERMAP_API_KEY);
@@ -43,13 +45,13 @@ class WeatherProvider extends ChangeNotifier {
 
   void update() async {
     _lastUpdated = DateTime.now();
-    weatherData = await _openWeatherMap.getWeather(currentWeatherLocation);
+    weatherData = await _openWeatherMap.getWeather(_currentWeatherLocation);
     print(weatherData!.weather.id);
     notifyListeners();
   }
 
   void setLocation(Position position, Placemark? placemark) {
-    currentWeatherLocation = WeatherLocation(
+    _currentWeatherLocation = WeatherLocation(
       latitude: position.latitude,
       longitude: position.longitude,
       shortName: getShortName(placemark, position),
@@ -79,9 +81,9 @@ class WeatherProvider extends ChangeNotifier {
 
   void toggleFavorite() {
     if (locationIsFavorite) {
-      removeFavorite(currentWeatherLocation);
+      removeFavorite(_currentWeatherLocation);
     } else {
-      addFavorite(currentWeatherLocation);
+      addFavorite(_currentWeatherLocation);
     }
   }
 
@@ -144,7 +146,7 @@ class WeatherProvider extends ChangeNotifier {
   }
 
   void setWeatherLocation(WeatherLocation location) {
-    currentWeatherLocation = location;
+    _currentWeatherLocation = location;
     update();
   }
 }

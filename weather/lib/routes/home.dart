@@ -10,7 +10,7 @@ class WeatherPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var location = context.select((WeatherProvider p) => p.currentWeatherLocation.shortName);
+    var location = context.select((WeatherProvider p) => p.location.shortName);
     var weatherData = context.select((WeatherProvider p) => p.weatherData);
     var locationIsFavorite = context.select((WeatherProvider p) => p.locationIsFavorite);
     var favorites = context.select((WeatherProvider p) => p.favorites);
