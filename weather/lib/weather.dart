@@ -1,12 +1,13 @@
 class WeatherData {
-  final DateTime lastUpdated;
   final Wind wind;
+  final Weather weather;
 
   final double temperature;
   final double feelsLike;
   final int pressure;
   final int humidity;
-  final Weather weather;
+
+  final int timeStamp;
 
   WeatherData({
     required this.weather,
@@ -15,7 +16,7 @@ class WeatherData {
     required this.wind,
     required this.pressure,
     required this.humidity,
-    required this.lastUpdated,
+    required this.timeStamp,
   });
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
@@ -26,7 +27,7 @@ class WeatherData {
       feelsLike: json["main"]["feels_like"] + .0,
       pressure: json["main"]["pressure"],
       humidity: json["main"]["humidity"],
-      lastUpdated: DateTime.now(),
+      timeStamp: json["dt"],
     );
   }
 }
