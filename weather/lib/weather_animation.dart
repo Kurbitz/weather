@@ -6,12 +6,12 @@ class WeatherAnimation extends StatelessWidget {
   const WeatherAnimation({
     super.key,
     required this.assetPath,
-    required this.title,
+    required this.text,
     required this.width,
     required this.height,
   });
   final String assetPath;
-  final String title;
+  final Widget? text;
   final double width;
   final double height;
 
@@ -25,26 +25,19 @@ class WeatherAnimation extends StatelessWidget {
           width: width,
           height: height,
         ),
-        Center(
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 20,
-            ),
+        if (text != null)
+          Center(
+            child: text,
           ),
-        ),
       ],
     );
   }
 
   factory WeatherAnimation.byWeatherData(
-    WeatherData weatherData,
-    double width,
-    double height,
-    bool isDay,
-  ) {
+      WeatherData weatherData, double width, double height, bool isDay,
+      [Widget? text]) {
     var id = weatherData.weather.id;
-    var title = weatherData.weather.main;
+
     switch (id) {
       case 200:
       case 230:
@@ -55,14 +48,14 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/thunderstorms-day-rain.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/thunderstorms-night-rain.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -72,14 +65,14 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/thunderstorms-day.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/thunderstorms-night.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -88,14 +81,14 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/thunderstorms-day-extreme.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/thunderstorms-night-extreme.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -110,14 +103,14 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/partly-cloudy-day-drizzle.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/partly-cloudy-night-drizzle.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -131,14 +124,14 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/partly-cloudy-day-rain.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/partly-cloudy-night-rain.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -150,21 +143,21 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/extreme-day-rain.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/extreme-night-rain.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
       case 511:
         return WeatherAnimation(
           assetPath: "assets/weather/fill/extreme-sleet.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -175,14 +168,14 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/partly-cloudy-day-snow.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/partly-cloudy-night-snow.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -194,14 +187,14 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/partly-cloudy-day-sleet.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/partly-cloudy-night-sleet.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -210,21 +203,21 @@ class WeatherAnimation extends StatelessWidget {
       case 622:
         return WeatherAnimation(
           assetPath: "assets/weather/fill/extreme-snow.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
       case 701:
         return WeatherAnimation(
           assetPath: "assets/weather/fill/mist.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
       case 711:
         return WeatherAnimation(
           assetPath: "assets/weather/fill/smoke.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -232,21 +225,21 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/haze-day.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/haze-night.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
       case 731:
         return WeatherAnimation(
           assetPath: "assets/weather/fill/dust-wind.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -254,14 +247,14 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/fog-day.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/fog-night.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -269,42 +262,42 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/dust-day.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/dust-night.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
       case 761:
         return WeatherAnimation(
           assetPath: "assets/weather/fill/dust.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
       case 762:
         return WeatherAnimation(
           assetPath: "assets/weather/fill/smoke-particles.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
       case 771:
         return WeatherAnimation(
           assetPath: "assets/weather/fill/wind.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
       case 781:
         return WeatherAnimation(
           assetPath: "assets/weather/fill/tornado.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -312,14 +305,14 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/clear-day.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/clear-night.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -330,14 +323,14 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/partly-cloudy-day.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/partly-cloudy-night.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -346,14 +339,14 @@ class WeatherAnimation extends StatelessWidget {
         if (isDay) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/overcast-day.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/overcast-night.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );
@@ -362,63 +355,63 @@ class WeatherAnimation extends StatelessWidget {
         if (time >= 0 && time < 3) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/time-night.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         } else if (time >= 3 && time < 6) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/time-late-night.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         } else if (time >= 6 && time < 9) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/time-morning.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         } else if (time >= 9 && time < 12) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/time-late-morning.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         } else if (time >= 12 && time < 15) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/time-afternoon.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         } else if (time >= 15 && time < 18) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/time-late-afternoon.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         } else if (time >= 18 && time < 21) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/time-evening.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         } else if (time >= 21 && time < 24) {
           return WeatherAnimation(
             assetPath: "assets/weather/fill/time-late-evening.json",
-            title: title,
+            text: text,
             width: width,
             height: height,
           );
         }
         return WeatherAnimation(
           assetPath: "assets/weather/fill/not-available.json",
-          title: title,
+          text: text,
           width: width,
           height: height,
         );

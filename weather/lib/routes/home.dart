@@ -306,7 +306,18 @@ class Weather extends StatelessWidget {
                       ),
                       Flexible(
                         flex: 1,
-                        child: WeatherAnimation.byWeatherData(weatherData!, 120, 120, isDaytime),
+                        child: WeatherAnimation.byWeatherData(
+                          weatherData!,
+                          120,
+                          120,
+                          isDaytime,
+                          Text(
+                            weatherData!.weather.main,
+                            style: const TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
