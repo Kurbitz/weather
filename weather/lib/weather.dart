@@ -30,6 +30,8 @@ class WeatherData {
       timeStamp: json["dt"],
     );
   }
+
+  DateTime get date => DateTime.fromMillisecondsSinceEpoch(timeStamp * 1000);
 }
 
 class Weather {
