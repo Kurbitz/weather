@@ -253,66 +253,64 @@ class Weather extends StatelessWidget {
 
           return ListView(
             scrollDirection: Axis.vertical,
+            padding: const EdgeInsets.all(8.0),
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Flexible(
-                          flex: 1,
-                          child: Text(
-                            lastUpdated,
-                            style: const TextStyle(
-                              fontSize: 20,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: Text(
+                          lastUpdated,
+                          style: const TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: Center(
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Column(
+                              children: [
+                                Text(
+                                  "${weatherData!.temperature.round()}C°",
+                                  style: const TextStyle(
+                                    fontSize: 50,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  "Feels like ${weatherData!.feelsLike.round()}C°",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Flexible(
-                          flex: 1,
-                          child: Center(
-                            child: FittedBox(
-                              fit: BoxFit.fitWidth,
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "${weatherData!.temperature.round()}C°",
-                                    style: const TextStyle(
-                                      fontSize: 50,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Feels like ${weatherData!.feelsLike.round()}C°",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Flexible(
-                          flex: 1,
-                          child: WeatherAnimation.byWeatherData(weatherData!, 120, 120, isDaytime),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
+                      ),
+                      Flexible(
+                        flex: 1,
+                        child: WeatherAnimation.byWeatherData(weatherData!, 120, 120, isDaytime),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                ],
               ),
             ],
           );
