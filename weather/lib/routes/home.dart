@@ -268,9 +268,7 @@ class Weather extends StatelessWidget {
                         flex: 1,
                         child: Text(
                           lastUpdated,
-                          style: const TextStyle(
-                            fontSize: 20,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
                     ],
@@ -288,16 +286,14 @@ class Weather extends StatelessWidget {
                               children: [
                                 Text(
                                   "${weatherData!.temperature.round()}C°",
-                                  style: const TextStyle(
-                                    fontSize: 50,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context).textTheme.displayLarge!.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                      ),
                                 ),
                                 Text(
                                   "Feels like ${weatherData!.feelsLike.round()}C°",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                               ],
                             ),
@@ -313,9 +309,7 @@ class Weather extends StatelessWidget {
                           isDaytime,
                           Text(
                             weatherData!.weather.main,
-                            style: const TextStyle(
-                              fontSize: 20,
-                            ),
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ),
                       ),
