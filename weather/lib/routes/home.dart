@@ -226,72 +226,97 @@ class Weather extends StatelessWidget {
           },
         );
       },
-      child: ListView(
-        scrollDirection: Axis.vertical,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
+      child: FutureBuilder(
+        future: Future.value(weatherData),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Error"),
+                  TextButton(
+                    onPressed: () {
+                      context.read<WeatherProvider>().update();
+                    },
+                    child: const Text("Retry"),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView(
+            scrollDirection: Axis.vertical,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Flexible(
-                      flex: 1,
-                      child: Text(
-                        lastUpdated,
-                        style: const TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: Center(
-                        child: FittedBox(
-                          fit: BoxFit.fitWidth,
-                          child: Column(
-                            children: [
-                              Text(
-                                "${weatherData?.temperature.round() ?? ""}C°",
-                                style: const TextStyle(
-                                  fontSize: 50,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                "Feels like ${weatherData?.feelsLike.round() ?? ""}C°",
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          child: Text(
+                            lastUpdated,
+                            style: const TextStyle(
+                              fontSize: 20,
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                    Flexible(
-                      flex: 1,
-                      child: weatherData == null
-                          ? const CircularProgressIndicator()
-                          : WeatherAnimation.byWeatherData(weatherData!, 120, 120, isDaytime),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          child: Center(
+                            child: FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "${weatherData!.temperature.round()}C°",
+                                    style: const TextStyle(
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Feels like ${weatherData!.feelsLike.round()}C°",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 1,
+                          child: WeatherAnimation.byWeatherData(weatherData!, 120, 120, isDaytime),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }
