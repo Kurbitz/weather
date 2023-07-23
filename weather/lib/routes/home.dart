@@ -99,7 +99,7 @@ class WeatherPage extends StatelessWidget {
                   Weather(
                     weatherData: weatherData,
                   ),
-                  const Forecast(),
+                  Forecast(weatherForecast: weatherForecast),
                 ],
               ),
             ),
@@ -334,13 +334,150 @@ class Weather extends StatelessWidget {
   }
 }
 
+String timestampToHourSpan(int timestamp, int span) {
+  var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  var hour = date.hour;
+  var start = hour.toString().padLeft(2, '0');
+  var end = ((hour + span) % 24).toString().padLeft(2, '0');
+  return "$start-$end";
+}
+
 class Forecast extends StatelessWidget {
   const Forecast({
     super.key,
+    required this.weatherForecast,
   });
+
+  final List<List<WeatherData>>? weatherForecast;
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return RefreshIndicator(
+      onRefresh: () {
+        return Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            context.read<WeatherProvider>().update();
+            return;
+          },
+        );
+      },
+      child: FutureBuilder(
+        future: Future.value(weatherForecast),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Error"),
+                  TextButton(
+                    onPressed: () {
+                      context.read<WeatherProvider>().update();
+                    },
+                    child: const Text("Retry"),
+                  ),
+                ],
+              ),
+            );
+          }
+          return ListView.builder(
+            itemCount: weatherForecast!.length,
+            scrollDirection: Axis.vertical,
+            padding: const EdgeInsets.all(8.0),
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              child: DailyForecast(
+                dailyData: weatherForecast![index],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class DailyForecast extends StatelessWidget {
+  const DailyForecast({
+    super.key,
+    required this.dailyData,
+  });
+
+  final List<WeatherData> dailyData;
+
+  @override
+  Widget build(BuildContext context) {
+    final date = dailyData[0].date;
+    final now = DateTime.now();
+    String dayName;
+    if (date.isSameDate(now)) {
+      dayName = "Today ${DateFormat("d, MMMM").format(date)}";
+    } else if (now.add(const Duration(days: 1)).isSameDate(date)) {
+      dayName = "Tomorrow ${DateFormat("d, MMMM").format(date)}";
+    } else {
+      dayName = DateFormat("EEEE d, MMMM").format(date);
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.25),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  dayName,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
+            ),
+            ListView.separated(
+              itemCount: dailyData.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              separatorBuilder: (context, index) => const Divider(),
+              itemBuilder: (context, index) {
+                final weather = dailyData[index];
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      timestampToHourSpan(weather.timeStamp, 3),
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    const SizedBox(width: 10),
+                    WeatherAnimation.byWeatherData(weather, 50, 50, true),
+                    const SizedBox(width: 10),
+                    Text(
+                      "${weather.temperature.round()}C°",
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      weather.weather.description.capitalize(),
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    )
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
