@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:intl/intl.dart";
 import "package:weather/extentions.dart";
+import "package:weather/logic.dart";
 import "package:weather/provider.dart";
 import "package:provider/provider.dart";
 import "package:weather/weather.dart";
@@ -335,14 +336,6 @@ class Weather extends StatelessWidget {
       ),
     );
   }
-}
-
-String timestampToHourSpan(int timestamp, int span) {
-  var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-  var hour = date.hour;
-  var start = hour.toString().padLeft(2, '0');
-  var end = ((hour + span) % 24).toString().padLeft(2, '0');
-  return "$start-$end";
 }
 
 class Forecast extends StatelessWidget {

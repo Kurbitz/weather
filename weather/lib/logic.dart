@@ -29,3 +29,12 @@ int metersPerSecondToBeufort(double speed) {
     throw Exception("Invalid wind speed");
   }
 }
+
+// Converts a timestamp to a string of the form "HH-hh"  where HH is the start hour and hh is the end hour which is HH + span
+String timestampToHourSpan(int timestamp, int span) {
+  var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  var hour = date.hour;
+  var start = hour.toString().padLeft(2, '0');
+  var end = ((hour + span) % 24).toString().padLeft(2, '0');
+  return "$start-$end";
+}
