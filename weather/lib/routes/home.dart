@@ -142,6 +142,15 @@ class WeatherDrawer extends StatelessWidget {
             ],
           ),
         ),
+        ListTile(
+          title: Text(
+            "Current location",
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          subtitle: Text(
+            context.select((WeatherProvider p) => p.location.longName),
+          ),
+        ),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 20.0),
           child: Row(
