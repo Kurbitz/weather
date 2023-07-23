@@ -22,12 +22,14 @@ class WeatherProvider extends ChangeNotifier {
   static const _favoritesKey = "favorites";
   DateTime _lastUpdated;
   final _formatter = DateFormat("d MMMM HH:mm");
-  WeatherData? weatherData;
+  WeatherData? currentWeather;
+  List<List<WeatherData>>? weatherForecast;
+
   late OpenWeatherMap _openWeatherMap;
   List<WeatherLocation> favorites = [];
 
   String get lastUpdatedString => _formatter.format(_lastUpdated);
-  bool get isDaytime => weatherData?.weather.icon.endsWith("d") ?? true;
+  bool get isDaytime => currentWeather?.weather.icon.endsWith("d") ?? true;
   bool get locationIsFavorite => favorites.contains(_currentWeatherLocation);
 
   WeatherProvider() : _lastUpdated = DateTime.now() {
@@ -43,10 +45,30 @@ class WeatherProvider extends ChangeNotifier {
     });
   }
 
+  List<List<WeatherData>> groupForecastByDay(List<WeatherData> forecast) {
+    final groupedForecast = <List<WeatherData>>[];
+    var currentDay = forecast[0].date.day;
+    var currentDayForecast = <WeatherData>[];
+
+    for (var i = 0; i < forecast.length; i++) {
+      if (forecast[i].date.day != currentDay) {
+        groupedForecast.add(currentDayForecast);
+        currentDayForecast = [];
+        currentDay = forecast[i].date.day;
+      }
+      currentDayForecast.add(forecast[i]);
+    }
+    groupedForecast.add(currentDayForecast);
+    return groupedForecast;
+  }
+
   void update() async {
     _lastUpdated = DateTime.now();
-    weatherData = await _openWeatherMap.getCurrentWeather(_currentWeatherLocation);
-    print(weatherData!.weather.id);
+    currentWeather = await _openWeatherMap.getCurrentWeather(_currentWeatherLocation);
+    final forecast = await _openWeatherMap.getWeatherForecast(_currentWeatherLocation, 40);
+    if (forecast != null) {
+      weatherForecast = groupForecastByDay(forecast);
+    }
     notifyListeners();
   }
 

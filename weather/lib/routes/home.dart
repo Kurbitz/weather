@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:intl/intl.dart";
+import "package:weather/extentions.dart";
 import "package:weather/provider.dart";
 import "package:provider/provider.dart";
 import "package:weather/weather.dart";
@@ -11,7 +13,8 @@ class WeatherPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var location = context.select((WeatherProvider p) => p.location.shortName);
-    var weatherData = context.select((WeatherProvider p) => p.weatherData);
+    var weatherData = context.select((WeatherProvider p) => p.currentWeather);
+    var weatherForecast = context.select((WeatherProvider p) => p.weatherForecast);
     var locationIsFavorite = context.select((WeatherProvider p) => p.locationIsFavorite);
     var favorites = context.select((WeatherProvider p) => p.favorites);
     return Scaffold(

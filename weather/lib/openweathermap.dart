@@ -60,4 +60,35 @@ class OpenWeatherMap {
       return null;
     }
   }
+
+  Future<List<WeatherData>?> getWeatherForecast(WeatherLocation location, int count) async {
+    final uri = Uri(
+      scheme: "https",
+      host: _host,
+      path: "data/2.5/forecast",
+      queryParameters: {
+        "lat": location.latitude,
+        "lon": location.longitude,
+        "appid": _apiKey,
+        "units": "metric",
+        "cnt": count.toString(),
+      },
+    );
+
+    try {
+      final response = await HttpClient().getUrl(uri).then((request) => request.close());
+      final responseBody = await response.transform(const Utf8Decoder()).join();
+      final json = jsonDecode(responseBody);
+
+      if (response.statusCode != 200) {
+        return null;
+      }
+
+      final list = json["list"] as List<dynamic>;
+      return list.map((e) => WeatherData.fromJson(e)).toList();
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
 }
