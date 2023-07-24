@@ -106,6 +106,46 @@ class Wind {
   final double speed;
   final int direction;
 
+  // Converts degrees to cardinal direction
+  // http://snowfence.umn.edu/Components/winddirectionanddegrees.htm
+  String get cardinalDirection {
+    if (direction >= 348.75 || direction < 11.25) {
+      return "north";
+    } else if (direction < 33.75) {
+      return "north-northeast";
+    } else if (direction < 56.25) {
+      return "northeast";
+    } else if (direction < 78.75) {
+      return "east-northeast";
+    } else if (direction < 101.25) {
+      return "east";
+    } else if (direction < 123.75) {
+      return "east-southeast";
+    } else if (direction < 146.25) {
+      return "southeast";
+    } else if (direction < 168.75) {
+      return "south-southeast";
+    } else if (direction < 191.25) {
+      return "south";
+    } else if (direction < 213.75) {
+      return "south-southwest";
+    } else if (direction < 236.25) {
+      return "southwest";
+    } else if (direction < 258.75) {
+      return "west-southwest";
+    } else if (direction < 281.25) {
+      return "west";
+    } else if (direction < 303.75) {
+      return "west-northwest";
+    } else if (direction < 326.25) {
+      return "northwest";
+    } else if (direction < 348.75) {
+      return "north-northwest";
+    } else {
+      throw Exception("Invalid wind direction");
+    }
+  }
+
   Wind({
     required this.speed,
     required this.direction,
