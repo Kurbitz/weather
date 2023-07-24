@@ -1,5 +1,5 @@
 // Converts meters per second to Beaufort scale (0-12) which is used to describe wind speed
-int metersPerSecondToBeufort(double speed) {
+int metersPerSecondToBeaufort(double speed) {
   if (speed < 0.5 && speed >= 0) {
     return 0;
   } else if (speed < 1.5) {
