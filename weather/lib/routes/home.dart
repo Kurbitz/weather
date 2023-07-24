@@ -281,108 +281,218 @@ class Weather extends StatelessWidget {
                   ),
                 ],
               ),
-              Row(
-                // Temperature and weather animation
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.end,
+              Column(
                 children: [
-                  Flexible(
-                    flex: 1,
-                    child: Column(
-                      children: [
-                        Text(
-                          "${weatherData!.temperature.round()}C°",
-                          softWrap: false,
-                          style: Theme.of(context).textTheme.displayLarge!.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: Theme.of(context).colorScheme.onPrimaryContainer,
-                                fontSize: 72,
-                              ),
-                        ),
-                        const SizedBox(height: 15),
-                        Text(
-                          "Feels like ${weatherData!.feelsLike.round()}C°",
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: WeatherAnimation.byWeatherData(
-                        weatherData!,
-                        120,
-                        120,
-                        isDaytime,
-                        Text(
-                          weatherData!.weather.description.capitalize(),
-                          style: Theme.of(context).textTheme.labelLarge,
+                  Row(
+                    // Temperature and weather animation
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: Column(
+                          children: [
+                            Text(
+                              "${weatherData!.temperature.round()}C°",
+                              softWrap: false,
+                              style: Theme.of(context).textTheme.displayLarge!.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                    fontSize: 72,
+                                  ),
+                            ),
+                            const SizedBox(height: 15),
+                            Text(
+                              "Feels like ${weatherData!.feelsLike.round()}C°",
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-              Flex(
-                direction: Axis.horizontal,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: Text(
-                      "Blowing ${weatherData!.wind.speed.round()} m/s from ${weatherData!.wind.cardinalDirection}",
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: WeatherAnimation.byBeufort(
-                      metersPerSecondToBeaufort(weatherData!.wind.speed),
-                      100,
-                      100,
-                      Text("${metersPerSecondToBeaufort(weatherData!.wind.speed)} BFT",
-                          style: Theme.of(context).textTheme.bodyLarge),
-                    ),
-                  ),
-                ],
-              ),
-              Flex(
-                direction: Axis.horizontal,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: WeatherAnimation(
-                      assetPath: "assets/weather/fill/humidity.json",
-                      width: 100,
-                      height: 100,
-                      text: Text("${weatherData!.humidity}% humidity",
-                          style: Theme.of(context).textTheme.bodyLarge),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 1,
-                    child: WeatherAnimation(
-                      assetPath: weatherData!.pressure > 1013
-                          ? "assets/weather/fill/pressure-high.json"
-                          : "assets/weather/fill/pressure-low.json",
-                      width: 100,
-                      height: 100,
-                      text: Text(
-                        "${weatherData!.pressure} hPa",
-                        style: Theme.of(context).textTheme.bodyLarge,
+                      Flexible(
+                        flex: 1,
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: WeatherAnimation.byWeatherData(
+                            weatherData!,
+                            120,
+                            120,
+                            isDaytime,
+                            Text(
+                              weatherData!.weather.description.capitalize(),
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
+                  const SizedBox(height: 20),
+                  Details(weatherData: weatherData!),
                 ],
               ),
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class Details extends StatelessWidget {
+  const Details({
+    super.key,
+    required this.weatherData,
+  });
+
+  final WeatherData weatherData;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.25),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Details",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "${weatherData.wind.speed} m/s",
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                              ),
+                        ),
+                        TextSpan(
+                            text: " winds from ${weatherData.wind.cardinalDirection}",
+                            style: Theme.of(context).textTheme.bodyLarge),
+                      ],
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 1,
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "${weatherData.rain.volume_1h}mm",
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                              ),
+                        ),
+                        TextSpan(
+                          text: " of rain in the last hour",
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+            Wrap(
+              alignment: WrapAlignment.spaceEvenly,
+              direction: Axis.horizontal,
+              children: [
+                WeatherAnimation.byBeufort(
+                  weatherData.wind.beaufort,
+                  100,
+                  100,
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "${weatherData.wind.beaufort}",
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                              ),
+                        ),
+                        TextSpan(
+                          text: "\nBeaufort",
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                WeatherAnimation(
+                  assetPath: "assets/weather/fill/humidity.json",
+                  width: 100,
+                  height: 100,
+                  text: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "${weatherData.humidity}%",
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                              ),
+                        ),
+                        TextSpan(
+                          text: "\nHumidity",
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                WeatherAnimation(
+                  assetPath: weatherData.pressure > 1013
+                      ? "assets/weather/fill/pressure-low.json"
+                      : "assets/weather/fill/pressure-low.json",
+                  width: 100,
+                  height: 100,
+                  text: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "${weatherData.pressure}",
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                              ),
+                        ),
+                        TextSpan(
+                          text: "\nPressure",
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
