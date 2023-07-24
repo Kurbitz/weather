@@ -134,11 +134,9 @@ class WeatherDrawer extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              const Text(
+              Text(
                 "Weather",
-                style: TextStyle(
-                  fontSize: 30,
-                ),
+                style: Theme.of(context).textTheme.displaySmall,
               ),
             ],
           ),
@@ -152,16 +150,14 @@ class WeatherDrawer extends StatelessWidget {
             context.select((WeatherProvider p) => p.location.longName),
           ),
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 "Favorites",
-                style: TextStyle(
-                  fontSize: 20,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ],
           ),
@@ -173,9 +169,12 @@ class WeatherDrawer extends StatelessWidget {
                   (wl) => ListTile(
                     title: Text(
                       wl.shortName,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: context.select((WeatherProvider p) => p.location.shortName) ==
+                                    wl.shortName
+                                ? Theme.of(context).colorScheme.onPrimaryContainer
+                                : null,
+                          ),
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.favorite),
@@ -187,7 +186,13 @@ class WeatherDrawer extends StatelessWidget {
                         context.select((WeatherProvider p) => p.location.shortName) == wl.shortName
                             ? Theme.of(context).colorScheme.primaryContainer
                             : null,
-                    subtitle: Text(wl.longName),
+                    subtitle: Text(wl.longName,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              color: context.select((WeatherProvider p) => p.location.shortName) ==
+                                      wl.shortName
+                                  ? Theme.of(context).colorScheme.onPrimaryContainer
+                                  : null,
+                            )),
                     onTap: () {
                       context.read<WeatherProvider>().setWeatherLocation(wl);
                       Navigator.pop(context);
