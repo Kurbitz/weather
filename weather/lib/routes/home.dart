@@ -268,104 +268,116 @@ class Weather extends StatelessWidget {
             scrollDirection: Axis.vertical,
             padding: const EdgeInsets.all(8.0),
             children: [
-              Column(
+              Row(
+                // Last updated
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: Text(
-                          lastUpdated,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ),
-                    ],
+                  Flexible(
+                    flex: 1,
+                    child: Text(
+                      lastUpdated,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: Center(
-                          child: FittedBox(
-                            fit: BoxFit.fitWidth,
-                            child: Column(
-                              children: [
-                                Text(
-                                  "${weatherData!.temperature.round()}C°",
-                                  style: Theme.of(context).textTheme.displayLarge!.copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                                      ),
-                                ),
-                                Text(
-                                  "Feels like ${weatherData!.feelsLike.round()}C°",
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ],
-                            ),
-                          ),
+                ],
+              ),
+              Row(
+                // Temperature and weather animation
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: Column(
+                      children: [
+                        Text(
+                          "${weatherData!.temperature.round()}C°",
+                          softWrap: false,
+                          style: Theme.of(context).textTheme.displayLarge!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                fontSize: 72,
+                              ),
                         ),
-                      ),
-                      Flexible(
-                        flex: 1,
-                        child: WeatherAnimation.byWeatherData(
-                          weatherData!,
-                          120,
-                          120,
-                          isDaytime,
-                          Text(
-                            weatherData!.weather.main,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
+                        const SizedBox(height: 15),
+                        Text(
+                          "Feels like ${weatherData!.feelsLike.round()}C°",
+                          style: Theme.of(context).textTheme.labelLarge,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  const Divider(color: Colors.transparent, height: 20),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      WeatherAnimation.byBeufort(
-                        metersPerSecondToBeaufort(weatherData!.wind.speed),
-                        100,
-                        100,
-                        Text("${metersPerSecondToBeaufort(weatherData!.wind.speed)} BFT",
-                            style: Theme.of(context).textTheme.bodyLarge),
+                  Flexible(
+                    flex: 1,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      child: WeatherAnimation.byWeatherData(
+                        weatherData!,
+                        120,
+                        120,
+                        isDaytime,
+                        Text(
+                          weatherData!.weather.description.capitalize(),
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
                       ),
-                      Text(
-                        "${weatherData!.wind.speed.round()} m/s from ${weatherData!.wind.cardinalDirection}",
+                    ),
+                  ),
+                ],
+              ),
+              Flex(
+                direction: Axis.horizontal,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: Text(
+                      "Blowing ${weatherData!.wind.speed.round()} m/s from ${weatherData!.wind.cardinalDirection}",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: WeatherAnimation.byBeufort(
+                      metersPerSecondToBeaufort(weatherData!.wind.speed),
+                      100,
+                      100,
+                      Text("${metersPerSecondToBeaufort(weatherData!.wind.speed)} BFT",
+                          style: Theme.of(context).textTheme.bodyLarge),
+                    ),
+                  ),
+                ],
+              ),
+              Flex(
+                direction: Axis.horizontal,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: WeatherAnimation(
+                      assetPath: "assets/weather/fill/humidity.json",
+                      width: 100,
+                      height: 100,
+                      text: Text("${weatherData!.humidity}% humidity",
+                          style: Theme.of(context).textTheme.bodyLarge),
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: WeatherAnimation(
+                      assetPath: weatherData!.pressure > 1013
+                          ? "assets/weather/fill/pressure-high.json"
+                          : "assets/weather/fill/pressure-low.json",
+                      width: 100,
+                      height: 100,
+                      text: Text(
+                        "${weatherData!.pressure} hPa",
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                    ],
+                    ),
                   ),
-                  const Divider(color: Colors.transparent, height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      WeatherAnimation(
-                        assetPath: "assets/weather/fill/humidity.json",
-                        width: 100,
-                        height: 100,
-                        text: Text("${weatherData!.humidity}% humidity",
-                            style: Theme.of(context).textTheme.bodyLarge),
-                      ),
-                      WeatherAnimation(
-                        assetPath: weatherData!.pressure > 1013
-                            ? "assets/weather/fill/pressure-high.json"
-                            : "assets/weather/fill/pressure-low.json",
-                        width: 100,
-                        height: 100,
-                        text: Text(
-                          "${weatherData!.pressure} hPa",
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ),
-                    ],
-                  )
                 ],
               ),
             ],
@@ -476,6 +488,31 @@ class DailyForecast extends StatelessWidget {
                 ),
               ],
             ),
+            // Table header
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Time",
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  "Temp",
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                const SizedBox(width: 25),
+                Text(
+                  "Rain",
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                const SizedBox(width: 20),
+                Text(
+                  "Weather",
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+              ],
+            ),
             ListView.separated(
               itemCount: dailyData.length,
               shrinkWrap: true,
@@ -491,8 +528,6 @@ class DailyForecast extends StatelessWidget {
                       style: Theme.of(context).textTheme.labelLarge,
                     ),
                     const SizedBox(width: 10),
-                    WeatherAnimation.byWeatherData(weather, 50, 50, true),
-                    const SizedBox(width: 10),
                     Text(
                       "${weather.temperature.round()}C°",
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
@@ -500,6 +535,18 @@ class DailyForecast extends StatelessWidget {
                             color: Theme.of(context).colorScheme.onPrimaryContainer,
                           ),
                     ),
+                    const SizedBox(width: 10),
+                    if (weather.probabilityOfPrecipitation != null)
+                      SizedBox(
+                        width: 45,
+                        child: Text(
+                          "${(weather.probabilityOfPrecipitation! * 100).round()}%",
+                          textAlign: TextAlign.right,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                    const SizedBox(width: 10),
+                    WeatherAnimation.byWeatherData(weather, 50, 50, true),
                     const SizedBox(width: 10),
                     Text(
                       weather.weather.description.capitalize(),
