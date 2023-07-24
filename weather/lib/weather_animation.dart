@@ -6,14 +6,14 @@ class WeatherAnimation extends StatelessWidget {
   const WeatherAnimation({
     super.key,
     required this.assetPath,
-    required this.text,
     required this.width,
     required this.height,
+    this.text,
   });
   final String assetPath;
-  final Widget? text;
   final double width;
   final double height;
+  final Widget? text;
 
   @override
   Widget build(BuildContext context) {
