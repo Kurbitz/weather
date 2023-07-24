@@ -17,18 +17,17 @@ class WeatherAnimation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      direction: Axis.vertical,
       children: [
         Lottie.asset(
           assetPath,
           width: width,
           height: height,
         ),
-        if (text != null)
-          Center(
-            child: text,
-          ),
+        if (text != null) text!,
       ],
     );
   }
