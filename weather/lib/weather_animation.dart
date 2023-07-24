@@ -417,4 +417,107 @@ class WeatherAnimation extends StatelessWidget {
         );
     }
   }
+
+  factory WeatherAnimation.byBeufort(int beufort, double width, double height, [Widget? text]) {
+    switch (beufort) {
+      case 0:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-0.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 1:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-1.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 2:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-2.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 3:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-3.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 4:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-4.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 5:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-5.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 6:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-6.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 7:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-7.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 8:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-8.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 9:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-9.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 10:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-10.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 11:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-11.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      case 12:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/wind-beaufort-12.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+      default:
+        return WeatherAnimation(
+          assetPath: "assets/weather/fill/not-available.json",
+          text: text,
+          width: width,
+          height: height,
+        );
+    }
+  }
 }
