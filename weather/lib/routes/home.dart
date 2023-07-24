@@ -325,9 +325,47 @@ class Weather extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 20,
+                  const Divider(color: Colors.transparent, height: 20),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      WeatherAnimation.byBeufort(
+                        metersPerSecondToBeaufort(weatherData!.wind.speed),
+                        100,
+                        100,
+                        Text("${metersPerSecondToBeaufort(weatherData!.wind.speed)} BFT",
+                            style: Theme.of(context).textTheme.bodyLarge),
+                      ),
+                      Text(
+                        "${weatherData!.wind.speed.round()} m/s from ${weatherData!.wind.cardinalDirection}",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ],
                   ),
+                  const Divider(color: Colors.transparent, height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      WeatherAnimation(
+                        assetPath: "assets/weather/fill/humidity.json",
+                        width: 100,
+                        height: 100,
+                        text: Text("${weatherData!.humidity}% humidity",
+                            style: Theme.of(context).textTheme.bodyLarge),
+                      ),
+                      WeatherAnimation(
+                        assetPath: weatherData!.pressure > 1013
+                            ? "assets/weather/fill/pressure-high.json"
+                            : "assets/weather/fill/pressure-low.json",
+                        width: 100,
+                        height: 100,
+                        text: Text(
+                          "${weatherData!.pressure} hPa",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ),
             ],
