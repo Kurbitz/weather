@@ -416,7 +416,7 @@ class Details extends StatelessWidget {
                         ),
                         TextSpan(
                           text: " of rain in the last hour",
-                          style: Theme.of(context).textTheme.labelLarge,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ],
                     ),
