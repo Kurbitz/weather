@@ -1,3 +1,5 @@
+import 'package:weather/logic.dart';
+
 class WeatherData {
   final Weather weather;
   final Wind wind;
@@ -151,6 +153,8 @@ class Wind {
       throw Exception("Invalid wind direction");
     }
   }
+
+  int get beaufort => metersPerSecondToBeaufort(speed);
 
   Wind({
     required this.speed,
