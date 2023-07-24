@@ -1,9 +1,11 @@
 class WeatherData {
-  final Wind wind;
   final Weather weather;
+  final Wind wind;
+  final Rain rain;
 
   final double temperature;
   final double feelsLike;
+  final double? probabilityOfPrecipitation;
   final int pressure;
   final int humidity;
 
@@ -11,9 +13,11 @@ class WeatherData {
 
   WeatherData({
     required this.weather,
+    required this.wind,
+    required this.rain,
     required this.temperature,
     required this.feelsLike,
-    required this.wind,
+    required this.probabilityOfPrecipitation,
     required this.pressure,
     required this.humidity,
     required this.timeStamp,
@@ -23,8 +27,10 @@ class WeatherData {
     return WeatherData(
       weather: Weather.fromJson(json["weather"][0]),
       wind: Wind.fromJson(json["wind"]),
+      rain: Rain.fromJson(json["rain"]),
       temperature: json["main"]["temp"] + .0,
       feelsLike: json["main"]["feels_like"] + .0,
+      probabilityOfPrecipitation: json["pop"]?.toDouble(),
       pressure: json["main"]["pressure"],
       humidity: json["main"]["humidity"],
       timeStamp: json["dt"],
@@ -155,6 +161,23 @@ class Wind {
     return Wind(
       speed: json["speed"] + .0,
       direction: json["deg"],
+    );
+  }
+}
+
+class Rain {
+  final double volume_1h;
+  final double volume_3h;
+
+  Rain({
+    required this.volume_1h,
+    required this.volume_3h,
+  });
+
+  factory Rain.fromJson(Map<String, dynamic>? json) {
+    return Rain(
+      volume_1h: json?["1h"] ?? 0,
+      volume_3h: json?["3h"] ?? 0,
     );
   }
 }
