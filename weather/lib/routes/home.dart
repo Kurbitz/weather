@@ -37,6 +37,7 @@ class WeatherPage extends StatelessWidget {
         ),
         actions: [
           IconButton(
+            tooltip: locationIsFavorite ? "Remove from favorites" : "Add to favorites",
             icon: locationIsFavorite
                 ? Icon(
                     Icons.favorite,
@@ -49,6 +50,7 @@ class WeatherPage extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.my_location),
+            tooltip: "Get current location",
             onPressed: () => {
               Provider.of<WeatherProvider>(context, listen: false).updateLocation().then(
                 (updateSucceeded) {
@@ -178,6 +180,7 @@ class WeatherDrawer extends StatelessWidget {
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.favorite),
+                      tooltip: "Remove from favorites",
                       onPressed: () {
                         context.read<WeatherProvider>().removeFavorite(wl);
                       },
