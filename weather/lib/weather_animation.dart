@@ -49,20 +49,23 @@ class WeatherAnimation extends StatelessWidget {
       case 202:
         if (isDay) {
           assetPath = "assets/weather/fill/thunderstorms-day-rain.json";
+        } else {
+          assetPath = "assets/weather/fill/thunderstorms-night-rain.json";
         }
-        assetPath = "assets/weather/fill/thunderstorms-night-rain.json";
       case 211:
       case 210:
         if (isDay) {
           assetPath = "assets/weather/fill/thunderstorms-day.json";
+        } else {
+          assetPath = "assets/weather/fill/thunderstorms-night.json";
         }
-        assetPath = "assets/weather/fill/thunderstorms-night.json";
       case 212:
       case 221:
         if (isDay) {
           assetPath = "assets/weather/fill/thunderstorms-day-extreme.json";
+        } else {
+          assetPath = "assets/weather/fill/thunderstorms-night-extreme.json";
         }
-        assetPath = "assets/weather/fill/thunderstorms-night-extreme.json";
       case 300:
       case 301:
       case 302:
@@ -72,8 +75,9 @@ class WeatherAnimation extends StatelessWidget {
       case 321:
         if (isDay) {
           assetPath = "assets/weather/fill/partly-cloudy-day-drizzle.json";
+        } else {
+          assetPath = "assets/weather/fill/partly-cloudy-night-drizzle.json";
         }
-        assetPath = "assets/weather/fill/partly-cloudy-night-drizzle.json";
       case 313:
       case 314:
       case 500:
@@ -82,8 +86,9 @@ class WeatherAnimation extends StatelessWidget {
       case 520:
         if (isDay) {
           assetPath = "assets/weather/fill/partly-cloudy-day-rain.json";
+        } else {
+          assetPath = "assets/weather/fill/partly-cloudy-night-rain.json";
         }
-        assetPath = "assets/weather/fill/partly-cloudy-night-rain.json";
       case 502:
       case 503:
       case 522:
@@ -91,8 +96,9 @@ class WeatherAnimation extends StatelessWidget {
       case 531:
         if (isDay) {
           assetPath = "assets/weather/fill/extreme-day-rain.json";
+        } else {
+          assetPath = "assets/weather/fill/extreme-night-rain.json";
         }
-        assetPath = "assets/weather/fill/extreme-night-rain.json";
       case 511:
         assetPath = "assets/weather/fill/extreme-sleet.json";
       case 600:
@@ -101,8 +107,9 @@ class WeatherAnimation extends StatelessWidget {
       case 621:
         if (isDay) {
           assetPath = "assets/weather/fill/partly-cloudy-day-snow.json";
+        } else {
+          assetPath = "assets/weather/fill/partly-cloudy-night-snow.json";
         }
-        assetPath = "assets/weather/fill/partly-cloudy-night-snow.json";
       case 613:
       case 611:
       case 615:
@@ -110,8 +117,9 @@ class WeatherAnimation extends StatelessWidget {
       case 616:
         if (isDay) {
           assetPath = "assets/weather/fill/partly-cloudy-day-sleet.json";
+        } else {
+          assetPath = "assets/weather/fill/partly-cloudy-night-sleet.json";
         }
-        assetPath = "assets/weather/fill/partly-cloudy-night-sleet.json";
       case 602:
       case 622:
         assetPath = "assets/weather/fill/extreme-snow.json";
@@ -122,20 +130,23 @@ class WeatherAnimation extends StatelessWidget {
       case 721:
         if (isDay) {
           assetPath = "assets/weather/fill/haze-day.json";
+        } else {
+          assetPath = "assets/weather/fill/haze-night.json";
         }
-        assetPath = "assets/weather/fill/haze-night.json";
       case 731:
         assetPath = "assets/weather/fill/dust-wind.json";
       case 741:
         if (isDay) {
           assetPath = "assets/weather/fill/fog-day.json";
+        } else {
+          assetPath = "assets/weather/fill/fog-night.json";
         }
-        assetPath = "assets/weather/fill/fog-night.json";
       case 751:
         if (isDay) {
           assetPath = "assets/weather/fill/dust-day.json";
+        } else {
+          assetPath = "assets/weather/fill/dust-night.json";
         }
-        assetPath = "assets/weather/fill/dust-night.json";
       case 761:
         assetPath = "assets/weather/fill/dust.json";
       case 762:
@@ -147,20 +158,23 @@ class WeatherAnimation extends StatelessWidget {
       case 800:
         if (isDay) {
           assetPath = "assets/weather/fill/clear-day.json";
+        } else {
+          assetPath = "assets/weather/fill/clear-night.json";
         }
-        assetPath = "assets/weather/fill/clear-night.json";
       case 801:
       case 802:
       case 803:
         if (isDay) {
           assetPath = "assets/weather/fill/partly-cloudy-day.json";
+        } else {
+          assetPath = "assets/weather/fill/partly-cloudy-night.json";
         }
-        assetPath = "assets/weather/fill/partly-cloudy-night.json";
       case 804:
         if (isDay) {
           assetPath = "assets/weather/fill/overcast-day.json";
+        } else {
+          assetPath = "assets/weather/fill/overcast-night.json";
         }
-        assetPath = "assets/weather/fill/overcast-night.json";
       default:
         var time = DateTime.now().hour;
         if (time >= 0 && time < 3) {
@@ -179,8 +193,9 @@ class WeatherAnimation extends StatelessWidget {
           assetPath = "assets/weather/fill/time-evening.json";
         } else if (time >= 21 && time < 24) {
           assetPath = "assets/weather/fill/time-late-evening.json";
+        } else {
+          assetPath = "assets/weather/fill/not-available.json";
         }
-        assetPath = "assets/weather/fill/not-available.json";
     }
     return WeatherAnimation(
         assetPath: assetPath, width: width, height: height, text: text, fit: fit);
