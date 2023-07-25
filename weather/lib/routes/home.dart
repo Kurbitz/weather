@@ -351,9 +351,11 @@ class Details extends StatelessWidget {
   const Details({
     super.key,
     required this.weatherData,
+    this.use3hRain = false,
   });
 
   final WeatherData weatherData;
+  final bool use3hRain;
 
   @override
   Widget build(BuildContext context) {
@@ -406,13 +408,14 @@ class Details extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: "${weatherData.rain.volume_1h}mm",
+                          text:
+                              "${use3hRain ? weatherData.rain.volume_3h : weatherData.rain.volume_1h}mm",
                           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                 color: Theme.of(context).colorScheme.onPrimaryContainer,
                               ),
                         ),
                         TextSpan(
-                          text: " of rain in the last hour",
+                          text: use3hRain ? " of rain" : " of rain in the last hour",
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ],
@@ -612,7 +615,7 @@ class DailyForecast extends StatelessWidget {
               ),
               itemBuilder: (context, index) {
                 final weather = dailyData[index];
-                return ListTile(
+                return ExpansionTile(
                   title: Flex(
                     direction: Axis.horizontal,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -659,8 +662,16 @@ class DailyForecast extends StatelessWidget {
                     50,
                     weather.isDaytime,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-                  dense: true,
+                  tilePadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Details(
+                        weatherData: weather,
+                        use3hRain: true,
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
