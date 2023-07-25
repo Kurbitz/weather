@@ -126,21 +126,24 @@ class WeatherDrawer extends StatelessWidget {
     return Column(
       children: [
         DrawerHeader(
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Icon(
-                  Icons.wb_sunny,
-                  size: 50,
-                  color: Theme.of(context).colorScheme.primary,
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Icon(
+                    Icons.wb_sunny,
+                    size: 50,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
-              ),
-              Text(
-                "Weather",
-                style: Theme.of(context).textTheme.displaySmall,
-              ),
-            ],
+                Text(
+                  "Weather",
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
+              ],
+            ),
           ),
         ),
         ListTile(
