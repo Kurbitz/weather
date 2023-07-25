@@ -29,7 +29,7 @@ class WeatherProvider extends ChangeNotifier {
   List<WeatherLocation> favorites = [];
 
   String get lastUpdatedString => _formatter.format(_lastUpdated);
-  bool get isDaytime => currentWeather?.weather.icon.endsWith("d") ?? true;
+
   bool get locationIsFavorite => favorites.contains(_currentWeatherLocation);
 
   WeatherProvider() : _lastUpdated = DateTime.now() {

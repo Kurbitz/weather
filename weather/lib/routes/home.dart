@@ -238,7 +238,6 @@ class Weather extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var lastUpdated = context.select((WeatherProvider p) => p.lastUpdatedString);
-    var isDaytime = context.select((WeatherProvider p) => p.isDaytime);
 
     return RefreshIndicator(
       onRefresh: () {
@@ -328,7 +327,7 @@ class Weather extends StatelessWidget {
                             weatherData!,
                             120,
                             120,
-                            isDaytime,
+                            weatherData!.isDaytime,
                             Text(
                               weatherData!.weather.description.capitalize(),
                               style: Theme.of(context).textTheme.labelLarge,
@@ -590,7 +589,7 @@ class DailyForecast extends StatelessWidget {
     } else {
       dayName = DateFormat("EEEE d, MMMM").format(date);
     }
-    var isDaytime = context.select((WeatherProvider p) => p.isDaytime);
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -663,7 +662,7 @@ class DailyForecast extends StatelessWidget {
                     weather,
                     50,
                     50,
-                    isDaytime,
+                    weather.isDaytime,
                   ),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                   dense: true,
