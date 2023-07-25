@@ -9,11 +9,13 @@ class WeatherAnimation extends StatelessWidget {
     required this.width,
     required this.height,
     this.text,
+    this.fit,
   });
   final String assetPath;
   final double width;
   final double height;
   final Widget? text;
+  final BoxFit? fit;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,7 @@ class WeatherAnimation extends StatelessWidget {
       children: [
         Lottie.asset(
           assetPath,
+          fit: fit,
           width: width,
           height: height,
         ),
