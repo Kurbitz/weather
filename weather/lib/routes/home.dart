@@ -416,7 +416,7 @@ class Details extends StatelessWidget {
                       children: [
                         TextSpan(
                           text:
-                              "${use3hRain ? weatherData.rain.volume_3h : weatherData.rain.volume_1h}mm",
+                              "${use3hRain ? weatherData.rain.volume_3h.toStringAsPrecision(1) : weatherData.rain.volume_1h.toStringAsPrecision(1)} mm",
                           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                 color: Theme.of(context).colorScheme.onPrimaryContainer,
                               ),
@@ -652,7 +652,7 @@ class DailyForecast extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${weather.rain.volume_3h}mm",
+                        "${weather.rain.volume_3h.toStringAsPrecision(1)} mm",
                         style: Theme.of(context).textTheme.labelLarge!.copyWith(
                               color: Theme.of(context).colorScheme.secondary,
                             ),
