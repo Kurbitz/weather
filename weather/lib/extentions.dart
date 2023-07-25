@@ -18,6 +18,6 @@ extension DateOnlyCompare on DateTime {
 
 extension StringExtention on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${substring(1)}";
+    return isNotEmpty ? "${this[0].toUpperCase()}${substring(1)}" : this;
   }
 }
