@@ -321,18 +321,16 @@ class Weather extends StatelessWidget {
                       ),
                       Flexible(
                         flex: 1,
-                        child: FittedBox(
-                          fit: BoxFit.contain,
-                          child: WeatherAnimation.byWeatherData(
-                            weatherData!,
-                            120,
-                            120,
-                            weatherData!.isDaytime,
-                            Text(
-                              weatherData!.weather.description.capitalize(),
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),
+                        child: WeatherAnimation.byWeatherData(
+                          weatherData!,
+                          120,
+                          120,
+                          weatherData!.isDaytime,
+                          Text(
+                            weatherData!.weather.description.capitalize(),
+                            style: Theme.of(context).textTheme.labelLarge,
                           ),
+                          BoxFit.scaleDown,
                         ),
                       ),
                     ],
@@ -368,17 +366,14 @@ class Details extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Details",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
-                      ),
-                ),
-              ],
+            Center(
+              child: Text(
+                "Details",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+              ),
             ),
             const SizedBox(height: 10),
             Row(
