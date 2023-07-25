@@ -37,9 +37,9 @@ class WeatherAnimation extends StatelessWidget {
 
   factory WeatherAnimation.byWeatherData(
       WeatherData weatherData, double width, double height, bool isDay,
-      [Widget? text]) {
+      [Widget? text, BoxFit? fit]) {
     var id = weatherData.weather.id;
-
+    String assetPath;
     switch (id) {
       case 200:
       case 230:
@@ -48,53 +48,21 @@ class WeatherAnimation extends StatelessWidget {
       case 201:
       case 202:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/thunderstorms-day-rain.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/thunderstorms-day-rain.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/thunderstorms-night-rain.json",
-          text: text,
-          width: width,
-          height: height,
-        );
-
+        assetPath = "assets/weather/fill/thunderstorms-night-rain.json";
       case 211:
       case 210:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/thunderstorms-day.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/thunderstorms-day.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/thunderstorms-night.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/thunderstorms-night.json";
       case 212:
       case 221:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/thunderstorms-day-extreme.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/thunderstorms-day-extreme.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/thunderstorms-night-extreme.json",
-          text: text,
-          width: width,
-          height: height,
-        );
-
+        assetPath = "assets/weather/fill/thunderstorms-night-extreme.json";
       case 300:
       case 301:
       case 302:
@@ -103,20 +71,9 @@ class WeatherAnimation extends StatelessWidget {
       case 312:
       case 321:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/partly-cloudy-day-drizzle.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/partly-cloudy-day-drizzle.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/partly-cloudy-night-drizzle.json",
-          text: text,
-          width: width,
-          height: height,
-        );
-
+        assetPath = "assets/weather/fill/partly-cloudy-night-drizzle.json";
       case 313:
       case 314:
       case 500:
@@ -124,402 +81,158 @@ class WeatherAnimation extends StatelessWidget {
       case 521:
       case 520:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/partly-cloudy-day-rain.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/partly-cloudy-day-rain.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/partly-cloudy-night-rain.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/partly-cloudy-night-rain.json";
       case 502:
       case 503:
       case 522:
       case 504:
       case 531:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/extreme-day-rain.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/extreme-day-rain.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/extreme-night-rain.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/extreme-night-rain.json";
       case 511:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/extreme-sleet.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/extreme-sleet.json";
       case 600:
       case 620:
       case 601:
       case 621:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/partly-cloudy-day-snow.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/partly-cloudy-day-snow.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/partly-cloudy-night-snow.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/partly-cloudy-night-snow.json";
       case 613:
       case 611:
       case 615:
       case 612:
       case 616:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/partly-cloudy-day-sleet.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/partly-cloudy-day-sleet.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/partly-cloudy-night-sleet.json",
-          text: text,
-          width: width,
-          height: height,
-        );
-
+        assetPath = "assets/weather/fill/partly-cloudy-night-sleet.json";
       case 602:
       case 622:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/extreme-snow.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/extreme-snow.json";
       case 701:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/mist.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/mist.json";
       case 711:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/smoke.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/smoke.json";
       case 721:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/haze-day.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/haze-day.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/haze-night.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/haze-night.json";
       case 731:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/dust-wind.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/dust-wind.json";
       case 741:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/fog-day.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/fog-day.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/fog-night.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/fog-night.json";
       case 751:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/dust-day.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/dust-day.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/dust-night.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/dust-night.json";
       case 761:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/dust.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/dust.json";
       case 762:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/smoke-particles.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/smoke-particles.json";
       case 771:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind.json";
       case 781:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/tornado.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/tornado.json";
       case 800:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/clear-day.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/clear-day.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/clear-night.json",
-          text: text,
-          width: width,
-          height: height,
-        );
-
+        assetPath = "assets/weather/fill/clear-night.json";
       case 801:
       case 802:
       case 803:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/partly-cloudy-day.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/partly-cloudy-day.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/partly-cloudy-night.json",
-          text: text,
-          width: width,
-          height: height,
-        );
-
+        assetPath = "assets/weather/fill/partly-cloudy-night.json";
       case 804:
         if (isDay) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/overcast-day.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/overcast-day.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/overcast-night.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/overcast-night.json";
       default:
         var time = DateTime.now().hour;
         if (time >= 0 && time < 3) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/time-night.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/time-night.json";
         } else if (time >= 3 && time < 6) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/time-late-night.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/time-late-night.json";
         } else if (time >= 6 && time < 9) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/time-morning.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/time-morning.json";
         } else if (time >= 9 && time < 12) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/time-late-morning.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/time-late-morning.json";
         } else if (time >= 12 && time < 15) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/time-afternoon.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/time-afternoon.json";
         } else if (time >= 15 && time < 18) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/time-late-afternoon.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/time-late-afternoon.json";
         } else if (time >= 18 && time < 21) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/time-evening.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/time-evening.json";
         } else if (time >= 21 && time < 24) {
-          return WeatherAnimation(
-            assetPath: "assets/weather/fill/time-late-evening.json",
-            text: text,
-            width: width,
-            height: height,
-          );
+          assetPath = "assets/weather/fill/time-late-evening.json";
         }
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/not-available.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/not-available.json";
     }
+    return WeatherAnimation(
+        assetPath: assetPath, width: width, height: height, text: text, fit: fit);
   }
 
-  factory WeatherAnimation.byBeufort(int beufort, double width, double height, [Widget? text]) {
+  factory WeatherAnimation.byBeufort(int beufort, double width, double height,
+      [Widget? text, BoxFit? fit]) {
+    String assetPath;
     switch (beufort) {
       case 0:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-0.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-0.json";
+
       case 1:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-1.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-1.json";
+
       case 2:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-2.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-2.json";
+
       case 3:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-3.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-3.json";
+
       case 4:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-4.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-4.json";
+
       case 5:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-5.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-5.json";
+
       case 6:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-6.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-6.json";
+
       case 7:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-7.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-7.json";
+
       case 8:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-8.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-8.json";
+
       case 9:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-9.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-9.json";
+
       case 10:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-10.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-10.json";
+
       case 11:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-11.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-11.json";
+
       case 12:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/wind-beaufort-12.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/wind-beaufort-12.json";
+
       default:
-        return WeatherAnimation(
-          assetPath: "assets/weather/fill/not-available.json",
-          text: text,
-          width: width,
-          height: height,
-        );
+        assetPath = "assets/weather/fill/not-available.json";
     }
+    return WeatherAnimation(
+        assetPath: assetPath, width: width, height: height, text: text, fit: fit);
   }
 }
