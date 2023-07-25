@@ -40,6 +40,25 @@ class WeatherData {
   }
 
   DateTime get date => DateTime.fromMillisecondsSinceEpoch(timeStamp * 1000);
+  static List<WeatherData> fromForecastJson(Map<String, dynamic> json) {
+    return List<WeatherData>.from(
+      json["list"].map(
+        (x) {
+          return WeatherData(
+            weather: Weather.fromJson(x["weather"][0]),
+            wind: Wind.fromJson(x["wind"]),
+            rain: Rain.fromJson(x["rain"]),
+            temperature: x["main"]["temp"] + .0,
+            feelsLike: x["main"]["feels_like"] + .0,
+            probabilityOfPrecipitation: x["pop"]?.toDouble(),
+            pressure: x["main"]["pressure"],
+            humidity: x["main"]["humidity"],
+            timeStamp: x["dt"],
+          );
+        },
+      ),
+    );
+  }
 }
 
 class Weather {

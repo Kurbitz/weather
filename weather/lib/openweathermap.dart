@@ -84,8 +84,7 @@ class OpenWeatherMap {
         return null;
       }
 
-      final list = json["list"] as List<dynamic>;
-      return list.map((e) => WeatherData.fromJson(e)).toList();
+      return WeatherData.fromForecastJson(json);
     } catch (e) {
       print(e);
       return null;
