@@ -157,7 +157,9 @@ class WeatherProvider extends ChangeNotifier {
     if (!await favoritesAreSynced()) {
       favorites = await getSavedFavorites();
     }
-    favorites.add(location);
+
+    favorites = [...favorites, location];
+
     saveFavorites();
     notifyListeners();
   }
@@ -166,7 +168,7 @@ class WeatherProvider extends ChangeNotifier {
     if (!await favoritesAreSynced()) {
       favorites = await getSavedFavorites();
     }
-    favorites.remove(location);
+    favorites = favorites.where((element) => element != location).toList();
     saveFavorites();
     notifyListeners();
   }
