@@ -1,3 +1,4 @@
+import 'package:weather/extentions.dart';
 import 'package:weather/logic.dart';
 
 class WeatherData {
@@ -12,6 +13,8 @@ class WeatherData {
   final int humidity;
 
   final int timeStamp;
+  final int sunrise;
+  final int sunset;
 
   WeatherData({
     required this.weather,
@@ -23,6 +26,8 @@ class WeatherData {
     required this.pressure,
     required this.humidity,
     required this.timeStamp,
+    required this.sunrise,
+    required this.sunset,
   });
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
@@ -36,10 +41,16 @@ class WeatherData {
       pressure: json["main"]["pressure"],
       humidity: json["main"]["humidity"],
       timeStamp: json["dt"],
+      sunrise: json["sys"]["sunrise"],
+      sunset: json["sys"]["sunset"],
     );
   }
 
   DateTime get date => DateTime.fromMillisecondsSinceEpoch(timeStamp * 1000);
+  DateTime get sunriseTime => DateTime.fromMillisecondsSinceEpoch(sunrise * 1000);
+  DateTime get sunsetTime => DateTime.fromMillisecondsSinceEpoch(sunset * 1000);
+  bool get isDaytime => date.isAfterTimeOnly(sunriseTime) && date.isBeforeTimeOnly(sunsetTime);
+
   static List<WeatherData> fromForecastJson(Map<String, dynamic> json) {
     return List<WeatherData>.from(
       json["list"].map(
@@ -54,6 +65,8 @@ class WeatherData {
             pressure: x["main"]["pressure"],
             humidity: x["main"]["humidity"],
             timeStamp: x["dt"],
+            sunrise: json["city"]["sunrise"],
+            sunset: json["city"]["sunset"],
           );
         },
       ),
