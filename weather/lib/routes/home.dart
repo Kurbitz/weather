@@ -587,7 +587,7 @@ class DailyForecast extends StatelessWidget {
     } else {
       dayName = DateFormat("EEEE d, MMMM").format(date);
     }
-
+    var isDaytime = context.select((WeatherProvider p) => p.isDaytime);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -602,32 +602,7 @@ class DailyForecast extends StatelessWidget {
               children: [
                 Text(
                   dayName,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ],
-            ),
-            // Table header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "Time",
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  "Temp",
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-                const SizedBox(width: 25),
-                Text(
-                  "Rain",
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-                const SizedBox(width: 20),
-                Text(
-                  "Weather",
-                  style: Theme.of(context).textTheme.labelLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),
@@ -635,42 +610,59 @@ class DailyForecast extends StatelessWidget {
               itemCount: dailyData.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              separatorBuilder: (context, index) => const Divider(),
+              separatorBuilder: (context, index) => const Divider(
+                height: 0,
+              ),
               itemBuilder: (context, index) {
                 final weather = dailyData[index];
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      timestampToHourSpan(weather.timeStamp, 3),
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      "${weather.temperature.round()}C°",
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
-                          ),
-                    ),
-                    const SizedBox(width: 10),
-                    if (weather.probabilityOfPrecipitation != null)
-                      SizedBox(
-                        width: 45,
+                return ListTile(
+                  title: Flex(
+                    direction: Axis.horizontal,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "${weather.temperature.round()}C°",
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                            ),
+                      ),
+                      Text(
+                        "${(weather.probabilityOfPrecipitation! * 100).round()}%",
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                            ),
+                      ),
+                    ],
+                  ),
+                  subtitle: Flex(
+                    direction: Axis.horizontal,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
                         child: Text(
-                          "${(weather.probabilityOfPrecipitation! * 100).round()}%",
-                          textAlign: TextAlign.right,
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          weather.weather.description.capitalize(),
+                          style: Theme.of(context).textTheme.labelLarge,
                         ),
                       ),
-                    const SizedBox(width: 10),
-                    WeatherAnimation.byWeatherData(weather, 50, 50, true),
-                    const SizedBox(width: 10),
-                    Text(
-                      weather.weather.description.capitalize(),
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    )
-                  ],
+                      Text(
+                        "${weather.rain.volume_3h}mm",
+                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                      ),
+                    ],
+                  ),
+                  leading: Text(timestampToHourSpan(weather.timeStamp, 3),
+                      style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                            fontWeight: FontWeight.bold,
+                          )),
+                  trailing: WeatherAnimation.byWeatherData(
+                    weather,
+                    50,
+                    50,
+                    isDaytime,
+                  ),
+                  dense: true,
                 );
               },
             ),
