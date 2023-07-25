@@ -337,6 +337,13 @@ class Weather extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Details(weatherData: weatherData!),
+                  const SizedBox(height: 20),
+                  SunInfo(
+                    weatherData: weatherData!,
+                    iconWidth: 100,
+                    iconHeight: 100,
+                    direction: Axis.horizontal,
+                  ),
                 ],
               ),
             ],
@@ -674,6 +681,95 @@ class DailyForecast extends StatelessWidget {
                   ],
                 );
               },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SunInfo extends StatelessWidget {
+  const SunInfo({
+    super.key,
+    required this.weatherData,
+    required this.iconWidth,
+    required this.iconHeight,
+    this.direction = Axis.vertical,
+    this.padding = const EdgeInsets.all(8.0),
+  });
+  final WeatherData weatherData;
+  final double iconWidth;
+  final double iconHeight;
+  final Axis direction;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.25),
+      ),
+      child: Padding(
+        padding: padding,
+        child: Column(
+          children: [
+            Center(
+              child: Text(
+                "Sun",
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: Flex(
+                    direction: direction,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      WeatherAnimation(
+                        assetPath: "assets/weather/fill/sunrise.json",
+                        width: iconWidth,
+                        height: iconHeight,
+                      ),
+                      Text(
+                        DateFormat("HH:mm").format(weatherData.sunriseTime),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  flex: 1,
+                  child: Flex(
+                    direction: direction,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      WeatherAnimation(
+                        assetPath: "assets/weather/fill/sunset.json",
+                        width: iconWidth,
+                        height: iconHeight,
+                      ),
+                      Text(
+                        DateFormat("HH:mm").format(weatherData.sunsetTime),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
