@@ -665,6 +665,7 @@ class DailyForecast extends StatelessWidget {
                     50,
                     isDaytime,
                   ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                   dense: true,
                 );
               },
