@@ -135,8 +135,7 @@ class WeatherLocation {
       other is WeatherLocation &&
           runtimeType == other.runtimeType &&
           latitude == other.latitude &&
-          longitude == other.longitude &&
-          shortName == other.shortName;
+          longitude == other.longitude;
 
   @override
   int get hashCode => latitude.hashCode ^ longitude.hashCode ^ shortName.hashCode;
