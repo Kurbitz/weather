@@ -61,7 +61,7 @@ class OpenWeatherMap {
     }
   }
 
-  Future<List<WeatherData>?> getWeatherForecast(WeatherLocation location, int count) async {
+  Future<List<WeatherData>> getWeatherForecast(WeatherLocation location, int count) async {
     final uri = Uri(
       scheme: "https",
       host: _host,
@@ -81,13 +81,13 @@ class OpenWeatherMap {
       final json = jsonDecode(responseBody);
 
       if (response.statusCode != 200) {
-        return null;
+        return Future.error(json["message"]);
       }
 
       return WeatherData.fromForecastJson(json);
     } catch (e) {
       print(e);
-      return null;
+      rethrow;
     }
   }
 }

@@ -1,11 +1,12 @@
 import 'package:geolocator/geolocator.dart';
 import "package:geocoding/geocoding.dart";
+import 'package:weather/weather.dart';
 
 /// Determine the current position of the device.
 ///
 /// When the location services are not enabled or permissions
 /// are denied the `Future` will return an error.
-Future<Position> determinePosition() async {
+Future<Position> _determinePosition() async {
   bool serviceEnabled;
   LocationPermission permission;
 
@@ -42,13 +43,13 @@ Future<Position> determinePosition() async {
   return await Geolocator.getCurrentPosition();
 }
 
-Future<Placemark> determinePlace(Position position) async {
+Future<Placemark> _determinePlace(Position position) async {
   List<Placemark> placemarks =
       await placemarkFromCoordinates(position.latitude, position.longitude);
   return placemarks[0];
 }
 
-String getLongName(Placemark? placemarkLocation, Position position) {
+String _getLongName(Placemark? placemarkLocation, Position position) {
   if (placemarkLocation != null) {
     if (placemarkLocation.street != null &&
         placemarkLocation.street!.isNotEmpty &&
@@ -63,7 +64,7 @@ String getLongName(Placemark? placemarkLocation, Position position) {
   return coordinatesToDegree(position.latitude, position.longitude);
 }
 
-String? getShortName(Placemark? placemarkLocation, Position position) {
+String? _getShortName(Placemark? placemarkLocation, Position position) {
   if (placemarkLocation != null) {
     if (placemarkLocation.subLocality != null && placemarkLocation.subLocality!.isNotEmpty) {
       return placemarkLocation.subLocality!;
@@ -90,4 +91,29 @@ String coordinatesToDegree(double latitude, double longitude) {
   final lonSecond = ((((longitude.abs() - lonDegree) * 60) - lonMinute) * 60).truncate();
 
   return "$latDegree°$latMinute'$latSecond\"$latDirection $lonDegree°$lonMinute'$lonSecond\"$lonDirection";
+}
+
+Future<WeatherLocation> getLocation() async {
+  Position position;
+  Placemark? placemark;
+  try {
+    position = await _determinePosition();
+  } catch (e) {
+    print(e);
+    return Future.error(e);
+  }
+  try {
+    placemark = await _determinePlace(position);
+  } catch (e) {
+    print(e);
+    return Future.error(e);
+  }
+
+  return WeatherLocation(
+    latitude: position.latitude,
+    longitude: position.longitude,
+    shortName: _getShortName(placemark, position) ??
+        coordinatesToDegree(position.latitude, position.longitude),
+    longName: _getLongName(placemark, position),
+  );
 }

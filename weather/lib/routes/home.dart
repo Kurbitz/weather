@@ -13,103 +13,151 @@ class WeatherPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var location = context.select((WeatherProvider p) => p.location.shortName);
-    var weatherData = context.select((WeatherProvider p) => p.currentWeather);
-    var weatherForecast = context.select((WeatherProvider p) => p.weatherForecast);
-    var locationIsFavorite = context.select((WeatherProvider p) => p.locationIsFavorite);
-    var favorites = context.select((WeatherProvider p) => p.favorites);
-    return Scaffold(
-      appBar: AppBar(
-        title: Flex(
-          direction: Axis.horizontal,
-          children: [
-            Flexible(
-              child: Text(
-                location,
-                style: const TextStyle(
-                  fontSize: 22,
-                ),
-                overflow: TextOverflow.fade,
-                softWrap: true,
+    return FutureBuilder(
+        future: Future.value(context.select((WeatherProvider p) => p.isReady)),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Error",
+                    style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      snapshot.error.toString(),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                    ),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.onError,
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                    ),
+                    onPressed: () {
+                      context.read<WeatherProvider>().updateLocation();
+                    },
+                    child: const Text("Retry"),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            tooltip: locationIsFavorite ? "Remove from favorites" : "Add to favorites",
-            icon: locationIsFavorite
-                ? Icon(
-                    Icons.favorite,
-                    color: Theme.of(context).colorScheme.primary,
-                  )
-                : const Icon(Icons.favorite_border),
-            onPressed: () {
-              context.read<WeatherProvider>().toggleFavorite();
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.my_location),
-            tooltip: "Get current location",
-            onPressed: () => {
-              Provider.of<WeatherProvider>(context, listen: false).updateLocation().then(
-                (updateSucceeded) {
-                  if (updateSucceeded) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: const Text("Location updated"),
-                          backgroundColor: Theme.of(context).colorScheme.primary),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Text("Location update failed"),
-                        backgroundColor: Theme.of(context).colorScheme.error,
+            );
+          }
+
+          final location = context.select((WeatherProvider p) => p.location)!;
+          final weatherData = context.select((WeatherProvider p) => p.currentWeather)!;
+          final weatherForecast = context.select((WeatherProvider p) => p.weatherForecast)!;
+          final locationIsFavorite = context.select((WeatherProvider p) => p.locationIsFavorite);
+          final favorites = context.select((WeatherProvider p) => p.favorites);
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Flex(
+                direction: Axis.horizontal,
+                children: [
+                  Flexible(
+                    child: Text(
+                      location.shortName,
+                      style: const TextStyle(
+                        fontSize: 22,
                       ),
-                    );
-                  }
-                },
+                      overflow: TextOverflow.fade,
+                      softWrap: true,
+                    ),
+                  ),
+                ],
               ),
-            },
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        clipBehavior: Clip.antiAlias,
-        elevation: 0,
-        child: WeatherDrawer(
-          favorites: favorites,
-        ),
-      ),
-      body: DefaultTabController(
-        length: 2,
-        child: Flex(
-          direction: Axis.vertical,
-          children: [
-            const TabBar(
-              tabs: [
-                Tab(
-                  text: "Weather",
+              actions: [
+                IconButton(
+                  tooltip: locationIsFavorite ? "Remove from favorites" : "Add to favorites",
+                  icon: locationIsFavorite
+                      ? Icon(
+                          Icons.favorite,
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                      : const Icon(Icons.favorite_border),
+                  onPressed: () {
+                    context.read<WeatherProvider>().toggleFavorite();
+                  },
                 ),
-                Tab(
-                  text: "Forecast",
+                IconButton(
+                  icon: const Icon(Icons.my_location),
+                  tooltip: "Get current location",
+                  onPressed: () => {
+                    Provider.of<WeatherProvider>(context, listen: false).updateLocation().then(
+                      (updateSucceeded) {
+                        if (updateSucceeded) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: const Text("Location updated"),
+                                backgroundColor: Theme.of(context).colorScheme.primary),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: const Text("Location update failed"),
+                              backgroundColor: Theme.of(context).colorScheme.error,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  },
                 ),
               ],
             ),
-            Expanded(
-              child: TabBarView(
+            drawer: Drawer(
+              clipBehavior: Clip.antiAlias,
+              elevation: 0,
+              child: WeatherDrawer(
+                favorites: favorites,
+                currentLocation: location,
+              ),
+            ),
+            body: DefaultTabController(
+              length: 2,
+              child: Flex(
+                direction: Axis.vertical,
                 children: [
-                  Weather(
-                    weatherData: weatherData,
+                  const TabBar(
+                    tabs: [
+                      Tab(
+                        text: "Weather",
+                      ),
+                      Tab(
+                        text: "Forecast",
+                      ),
+                    ],
                   ),
-                  Forecast(weatherForecast: weatherForecast),
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        Weather(
+                          weatherData: weatherData,
+                        ),
+                        Forecast(
+                          weatherForecast: weatherForecast,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 }
 
@@ -117,9 +165,11 @@ class WeatherDrawer extends StatelessWidget {
   const WeatherDrawer({
     super.key,
     required this.favorites,
+    required this.currentLocation,
   });
 
   final List<WeatherLocation> favorites;
+  final WeatherLocation currentLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -151,9 +201,7 @@ class WeatherDrawer extends StatelessWidget {
             "Current location",
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          subtitle: Text(
-            context.select((WeatherProvider p) => p.location.longName),
-          ),
+          subtitle: Text(currentLocation.longName),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -175,27 +223,27 @@ class WeatherDrawer extends StatelessWidget {
                     title: Text(
                       wl.shortName,
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: context.select((WeatherProvider p) => p.location.shortName) ==
-                                    wl.shortName
+                            color: currentLocation.shortName == wl.shortName
                                 ? Theme.of(context).colorScheme.onPrimaryContainer
                                 : null,
                           ),
                     ),
                     trailing: IconButton(
-                      icon: const Icon(Icons.favorite),
+                      icon: Icon(
+                        Icons.favorite,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       tooltip: "Remove from favorites",
                       onPressed: () {
                         context.read<WeatherProvider>().removeFavorite(wl);
                       },
                     ),
-                    tileColor:
-                        context.select((WeatherProvider p) => p.location.shortName) == wl.shortName
-                            ? Theme.of(context).colorScheme.primaryContainer
-                            : null,
+                    tileColor: currentLocation.shortName == wl.shortName
+                        ? Theme.of(context).colorScheme.primaryContainer
+                        : null,
                     subtitle: Text(wl.longName,
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              color: context.select((WeatherProvider p) => p.location.shortName) ==
-                                      wl.shortName
+                              color: currentLocation.shortName == wl.shortName
                                   ? Theme.of(context).colorScheme.onPrimaryContainer
                                   : null,
                             )),
@@ -233,7 +281,7 @@ class Weather extends StatelessWidget {
     required this.weatherData,
   });
 
-  final WeatherData? weatherData;
+  final WeatherData weatherData;
 
   @override
   Widget build(BuildContext context) {
@@ -249,106 +297,79 @@ class Weather extends StatelessWidget {
           },
         );
       },
-      child: FutureBuilder(
-        future: Future.value(weatherData),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Error"),
-                  TextButton(
-                    onPressed: () {
-                      context.read<WeatherProvider>().update();
-                    },
-                    child: const Text("Retry"),
-                  ),
-                ],
+      child: ListView(
+        scrollDirection: Axis.vertical,
+        padding: const EdgeInsets.all(8.0),
+        children: [
+          Row(
+            // Last updated
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Flexible(
+                flex: 1,
+                child: Text(
+                  lastUpdated,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
               ),
-            );
-          }
-
-          return ListView(
-            scrollDirection: Axis.vertical,
-            padding: const EdgeInsets.all(8.0),
+            ],
+          ),
+          Column(
             children: [
               Row(
-                // Last updated
-                mainAxisAlignment: MainAxisAlignment.start,
+                // Temperature and weather animation
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Flexible(
                     flex: 1,
-                    child: Text(
-                      lastUpdated,
-                      style: Theme.of(context).textTheme.titleMedium,
+                    child: Column(
+                      children: [
+                        Text(
+                          "${weatherData.temperature.round()}C°",
+                          softWrap: false,
+                          style: Theme.of(context).textTheme.displayLarge!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                fontSize: 72,
+                              ),
+                        ),
+                        const SizedBox(height: 15),
+                        Text(
+                          "Feels like ${weatherData.feelsLike.round()}C°",
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: WeatherAnimation.byWeatherData(
+                      weatherData,
+                      120,
+                      120,
+                      weatherData.isDaytime,
+                      Text(
+                        weatherData.weather.description.capitalize(),
+                        style: Theme.of(context).textTheme.labelLarge,
+                      ),
+                      BoxFit.scaleDown,
                     ),
                   ),
                 ],
               ),
-              Column(
-                children: [
-                  Row(
-                    // Temperature and weather animation
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        child: Column(
-                          children: [
-                            Text(
-                              "${weatherData!.temperature.round()}C°",
-                              softWrap: false,
-                              style: Theme.of(context).textTheme.displayLarge!.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                                    fontSize: 72,
-                                  ),
-                            ),
-                            const SizedBox(height: 15),
-                            Text(
-                              "Feels like ${weatherData!.feelsLike.round()}C°",
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Flexible(
-                        flex: 1,
-                        child: WeatherAnimation.byWeatherData(
-                          weatherData!,
-                          120,
-                          120,
-                          weatherData!.isDaytime,
-                          Text(
-                            weatherData!.weather.description.capitalize(),
-                            style: Theme.of(context).textTheme.labelLarge,
-                          ),
-                          BoxFit.scaleDown,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Details(weatherData: weatherData!),
-                  const SizedBox(height: 20),
-                  SunInfo(
-                    weatherData: weatherData!,
-                    iconWidth: 100,
-                    iconHeight: 100,
-                    direction: Axis.horizontal,
-                  ),
-                ],
+              const SizedBox(height: 20),
+              Details(weatherData: weatherData),
+              const SizedBox(height: 20),
+              SunInfo(
+                weatherData: weatherData,
+                iconWidth: 100,
+                iconHeight: 100,
+                direction: Axis.horizontal,
               ),
             ],
-          );
-        },
+          ),
+        ],
       ),
     );
   }
@@ -392,7 +413,7 @@ class Details extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: RichText(
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.start,
                     text: TextSpan(
                       children: [
                         TextSpan(
@@ -408,25 +429,49 @@ class Details extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(width: 10),
                 Flexible(
                   flex: 1,
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text:
-                              "${use3hRain ? weatherData.rain.volume_3h.toStringAsPrecision(1) : weatherData.rain.volume_1h.toStringAsPrecision(1)} mm",
-                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text:
+                                  "${use3hRain ? weatherData.rain.volume_3h.toStringAsPrecision(1) : weatherData.rain.volume_1h.toStringAsPrecision(1)} mm",
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                  ),
+                            ),
+                            TextSpan(
+                              text: use3hRain ? " of rain" : " of rain in the last hour",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (weatherData.probabilityOfPrecipitation != null)
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "${(weatherData.probabilityOfPrecipitation! * 100).round()}%",
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                    ),
                               ),
+                              TextSpan(
+                                text: " chance of rain",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
                         ),
-                        TextSpan(
-                          text: use3hRain ? " of rain" : " of rain in the last hour",
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
               ],
@@ -519,7 +564,7 @@ class Forecast extends StatelessWidget {
     required this.weatherForecast,
   });
 
-  final List<List<WeatherData>>? weatherForecast;
+  final List<List<WeatherData>> weatherForecast;
 
   @override
   Widget build(BuildContext context) {
@@ -533,42 +578,16 @@ class Forecast extends StatelessWidget {
           },
         );
       },
-      child: FutureBuilder(
-        future: Future.value(weatherForecast),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting || snapshot.data == null) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Error"),
-                  TextButton(
-                    onPressed: () {
-                      context.read<WeatherProvider>().update();
-                    },
-                    child: const Text("Retry"),
-                  ),
-                ],
-              ),
-            );
-          }
-          return ListView.builder(
-            itemCount: weatherForecast!.length,
-            scrollDirection: Axis.vertical,
-            padding: const EdgeInsets.all(8.0),
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6.0),
-              child: DailyForecast(
-                dailyData: weatherForecast![index],
-              ),
-            ),
-          );
-        },
+      child: ListView.builder(
+        itemCount: weatherForecast.length,
+        scrollDirection: Axis.vertical,
+        padding: const EdgeInsets.all(8.0),
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6.0),
+          child: DailyForecast(
+            dailyData: weatherForecast[index],
+          ),
+        ),
       ),
     );
   }
@@ -617,9 +636,7 @@ class DailyForecast extends StatelessWidget {
               itemCount: dailyData.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              separatorBuilder: (context, index) => const Divider(
-                height: 0,
-              ),
+              separatorBuilder: (context, index) => const Divider(height: 0),
               itemBuilder: (context, index) {
                 final weather = dailyData[index];
                 return ExpansionTile(

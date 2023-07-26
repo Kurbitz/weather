@@ -1,8 +1,6 @@
 import "dart:async";
 import "dart:convert";
 import "package:flutter/material.dart";
-import "package:geocoding/geocoding.dart";
-import "package:geolocator/geolocator.dart";
 import "package:weather/env/env.dart";
 import "package:weather/location.dart";
 import "package:intl/intl.dart";
@@ -11,13 +9,13 @@ import "package:weather/openweathermap.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class WeatherProvider extends ChangeNotifier {
-  WeatherLocation _currentWeatherLocation = WeatherLocation(
-      latitude: 59.324,
-      longitude: 18.071,
-      shortName: "Stockholm",
-      longName: "Kvarteret Atlas, 111 29 Stockholm");
+  Completer _completer = Completer();
 
-  WeatherLocation get location => _currentWeatherLocation;
+  Future<dynamic> get isReady => _completer.future;
+
+  WeatherLocation? _currentWeatherLocation;
+
+  WeatherLocation? get location => _currentWeatherLocation;
 
   static const _favoritesKey = "favorites";
   DateTime _lastUpdated;
@@ -34,11 +32,26 @@ class WeatherProvider extends ChangeNotifier {
 
   WeatherProvider() : _lastUpdated = DateTime.now() {
     _openWeatherMap = OpenWeatherMap(Env.OPENWEATHERMAP_API_KEY);
-    updateLocation();
+    getLocation().then((value) {
+      _currentWeatherLocation = value;
+      update();
+      return true;
+    }).onError(
+      (error, stackTrace) {
+        print(error);
+        _currentWeatherLocation = WeatherLocation(
+          latitude: 59.327,
+          longitude: 18.068,
+          shortName: "Stockholm",
+          longName: "Riksgatan 1, 100 12 Stockholm",
+        );
+        _completer.completeError(error!, stackTrace);
+        return false;
+      },
+    );
     getSavedFavorites().then((value) {
       favorites = value;
     });
-    update();
     // Update every 10 minutes
     Timer.periodic(const Duration(minutes: 10), (timer) {
       update();
@@ -63,60 +76,51 @@ class WeatherProvider extends ChangeNotifier {
   }
 
   void update() async {
+    if (_currentWeatherLocation == null) {
+      return;
+    }
+    _completer = Completer();
     _lastUpdated = DateTime.now();
-    currentWeather = await _openWeatherMap.getCurrentWeather(_currentWeatherLocation);
-    final forecast = await _openWeatherMap.getWeatherForecast(_currentWeatherLocation, 40);
-    if (forecast != null) {
-      weatherForecast = groupForecastByDay(forecast);
+    List<WeatherData> forecast;
+    try {
+      currentWeather = await _openWeatherMap.getCurrentWeather(_currentWeatherLocation!);
+      forecast = await _openWeatherMap.getWeatherForecast(_currentWeatherLocation!, 40);
+    } catch (e) {
+      print(e);
+      _completer.completeError(e);
+      return;
+    }
+    weatherForecast = groupForecastByDay(forecast);
+
+    if (!_completer.isCompleted) {
+      _completer.complete();
     }
     notifyListeners();
   }
 
-  void setLocation(Position position, Placemark? placemark) async {
-    String? placeName;
-    try {
-      placeName = await _openWeatherMap.getReverseGeocoding(position.latitude, position.longitude);
-    } catch (e) {
-      print(e);
-      placeName = coordinatesToDegree(position.latitude, position.longitude);
-    }
-
-    _currentWeatherLocation = WeatherLocation(
-      latitude: position.latitude,
-      longitude: position.longitude,
-      shortName: getShortName(placemark, position) ??
-          placeName ??
-          coordinatesToDegree(position.latitude, position.longitude),
-      longName: getLongName(placemark, position),
-    );
-
-    update();
-  }
-
   Future<bool> updateLocation() async {
-    Position position;
-    Placemark? placemark;
     try {
-      position = await determinePosition();
+      _completer = Completer();
+      final location = await getLocation();
+      _currentWeatherLocation = location;
+      update();
+      return true;
     } catch (e) {
       print(e);
+      _completer.completeError(e);
       return false;
     }
-    try {
-      placemark = await determinePlace(position);
-    } catch (e) {
-      print(e);
-    }
-
-    setLocation(position, placemark);
-    return true;
   }
 
   void toggleFavorite() {
+    if (_currentWeatherLocation == null) {
+      return;
+    }
+
     if (locationIsFavorite) {
-      removeFavorite(_currentWeatherLocation);
+      removeFavorite(_currentWeatherLocation!);
     } else {
-      addFavorite(_currentWeatherLocation);
+      addFavorite(_currentWeatherLocation!);
     }
   }
 
