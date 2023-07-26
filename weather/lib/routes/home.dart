@@ -734,7 +734,7 @@ class SunInfo extends StatelessWidget {
           children: [
             Center(
               child: Text(
-                "Sun",
+                "Sunrise and sunset",
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       color: Theme.of(context).colorScheme.onPrimaryContainer,
                     ),
