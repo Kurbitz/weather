@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:weather/routes/home.dart';
 import 'package:weather/routes/about.dart';
 import 'package:go_router/go_router.dart';
-import 'package:weather/routes/search.dart';
 
 final _router = GoRouter(
   routes: [
@@ -15,10 +14,6 @@ final _router = GoRouter(
     GoRoute(
       path: '/about',
       builder: (context, state) => const AboutPage(),
-    ),
-    GoRoute(
-      path: '/search',
-      builder: (context, state) => const SearchPage(),
     ),
   ],
 );
