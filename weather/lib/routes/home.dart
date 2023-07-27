@@ -171,104 +171,106 @@ class WeatherDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        DrawerHeader(
-          child: FittedBox(
-            fit: BoxFit.fitWidth,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Icon(
-                    Icons.wb_sunny,
-                    size: 50,
-                    color: Theme.of(context).colorScheme.primary,
+    return SafeArea(
+      child: ListView(
+        children: [
+          DrawerHeader(
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Icon(
+                      Icons.wb_sunny,
+                      size: 50,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
-                ),
+                  Text(
+                    "Weather",
+                    style: Theme.of(context).textTheme.displaySmall,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Current location",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            subtitle: Text(currentLocation.longName),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 Text(
-                  "Weather",
-                  style: Theme.of(context).textTheme.displaySmall,
+                  "Favorites",
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
             ),
           ),
-        ),
-        ListTile(
-          title: Text(
-            "Current location",
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          subtitle: Text(currentLocation.longName),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
             children: [
-              Text(
-                "Favorites",
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ],
-          ),
-        ),
-        Wrap(
-          children: [
-            ...favorites
-                .map(
-                  (wl) => ListTile(
-                    title: Text(
-                      wl.shortName,
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: currentLocation.shortName == wl.shortName
-                                ? Theme.of(context).colorScheme.onPrimaryContainer
-                                : null,
-                          ),
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(
-                        Icons.favorite,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      tooltip: "Remove from favorites",
-                      onPressed: () {
-                        context.read<WeatherProvider>().removeFavorite(wl);
-                      },
-                    ),
-                    tileColor: currentLocation.shortName == wl.shortName
-                        ? Theme.of(context).colorScheme.primaryContainer
-                        : null,
-                    subtitle: Text(wl.longName,
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              ...favorites
+                  .map(
+                    (wl) => ListTile(
+                      title: Text(
+                        wl.shortName,
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
                               color: currentLocation.shortName == wl.shortName
                                   ? Theme.of(context).colorScheme.onPrimaryContainer
                                   : null,
-                            )),
-                    onTap: () {
-                      context.read<WeatherProvider>().setWeatherLocation(wl);
-                      Navigator.pop(context);
-                    },
-                  ),
-                )
-                .toList(),
-          ],
-        ),
-        const Divider(),
-        ListTile(
-          title: const Text("Clear"),
-          leading: const Icon(Icons.clear),
-          onTap: () => context.read<WeatherProvider>().clearFavorites(),
-        ),
-        ListTile(
-          title: const Text("About"),
-          leading: const Icon(Icons.info),
-          onTap: () => context.go("/about"),
-        ),
-        const Divider(
-          color: Colors.transparent,
-        ),
-      ],
+                            ),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(
+                          Icons.favorite,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        tooltip: "Remove from favorites",
+                        onPressed: () {
+                          context.read<WeatherProvider>().removeFavorite(wl);
+                        },
+                      ),
+                      tileColor: currentLocation.shortName == wl.shortName
+                          ? Theme.of(context).colorScheme.primaryContainer
+                          : null,
+                      subtitle: Text(wl.longName,
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                color: currentLocation.shortName == wl.shortName
+                                    ? Theme.of(context).colorScheme.onPrimaryContainer
+                                    : null,
+                              )),
+                      onTap: () {
+                        context.read<WeatherProvider>().setWeatherLocation(wl);
+                        Navigator.pop(context);
+                      },
+                    ),
+                  )
+                  .toList(),
+            ],
+          ),
+          const Divider(),
+          ListTile(
+            title: const Text("Clear"),
+            leading: const Icon(Icons.clear),
+            onTap: () => context.read<WeatherProvider>().clearFavorites(),
+          ),
+          ListTile(
+            title: const Text("About"),
+            leading: const Icon(Icons.info),
+            onTap: () => context.go("/about"),
+          ),
+          const Divider(
+            color: Colors.transparent,
+          ),
+        ],
+      ),
     );
   }
 }
