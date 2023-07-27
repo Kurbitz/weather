@@ -34,7 +34,7 @@ class OpenWeatherMap {
     }
   }
 
-  Future<String?> getReverseGeocoding(double latitude, double longitude) async {
+  Future<String> getReverseGeocoding(double latitude, double longitude) async {
     final uri = Uri(
       scheme: "https",
       host: _host,
@@ -53,11 +53,12 @@ class OpenWeatherMap {
       final json = jsonDecode(responseBody);
 
       if (response.statusCode != 200) {
-        return null;
+        return Future.error(json["message"]);
       }
       return json[0]["name"];
     } catch (e) {
-      return null;
+      print(e);
+      rethrow;
     }
   }
 
