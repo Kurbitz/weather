@@ -259,7 +259,30 @@ class WeatherDrawer extends StatelessWidget {
           ListTile(
             title: const Text("Clear"),
             leading: const Icon(Icons.clear),
-            onTap: () => context.read<WeatherProvider>().clearFavorites(),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text("Clear favorites"),
+                  content: const Text("Are you sure you want to clear all favorites?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Cancel"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        context.read<WeatherProvider>().clearFavorites();
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Clear"),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
           ListTile(
             title: const Text("About"),
