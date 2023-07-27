@@ -211,8 +211,8 @@ class Rain {
 
   factory Rain.fromJson(Map<String, dynamic>? json) {
     return Rain(
-      volume_1h: json?["1h"] ?? 0,
-      volume_3h: json?["3h"] ?? 0,
+      volume_1h: (json?["1h"] ?? 0) + .0,
+      volume_3h: (json?["3h"] ?? 0) + .0,
     );
   }
 }
