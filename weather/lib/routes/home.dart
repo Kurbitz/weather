@@ -47,7 +47,7 @@ class WeatherPage extends StatelessWidget {
                       backgroundColor: Theme.of(context).colorScheme.error,
                     ),
                     onPressed: () {
-                      context.read<WeatherProvider>().updateLocation();
+                      context.read<WeatherProvider>().reload();
                     },
                     child: const Text("Retry"),
                   ),
@@ -97,23 +97,21 @@ class WeatherPage extends StatelessWidget {
                   tooltip: "Get current location",
                   onPressed: () => {
                     Provider.of<WeatherProvider>(context, listen: false).updateLocation().then(
-                      (updateSucceeded) {
-                        if (updateSucceeded) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: const Text("Location updated"),
-                                backgroundColor: Theme.of(context).colorScheme.primary),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text("Location update failed"),
-                              backgroundColor: Theme.of(context).colorScheme.error,
-                            ),
-                          );
-                        }
+                      (_) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: const Text("Location updated"),
+                              backgroundColor: Theme.of(context).colorScheme.primary),
+                        );
                       },
-                    ),
+                    ).onError((error, stackTrace) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(error.toString()),
+                          backgroundColor: Theme.of(context).colorScheme.error,
+                        ),
+                      );
+                    }),
                   },
                 ),
               ],
@@ -292,7 +290,14 @@ class Weather extends StatelessWidget {
         return Future.delayed(
           const Duration(seconds: 1),
           () {
-            context.read<WeatherProvider>().update();
+            context.read<WeatherProvider>().updateWeather().onError((error, stackTrace) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text("Error updating weather"),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+            });
             return;
           },
         );
@@ -573,7 +578,14 @@ class Forecast extends StatelessWidget {
         return Future.delayed(
           const Duration(seconds: 1),
           () {
-            context.read<WeatherProvider>().update();
+            context.read<WeatherProvider>().updateWeather().onError((error, stackTrace) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text("Error updating weather"),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+            });
             return;
           },
         );

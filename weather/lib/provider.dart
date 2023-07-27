@@ -34,19 +34,25 @@ class WeatherProvider extends ChangeNotifier {
     _openWeatherMap = OpenWeatherMap(Env.OPENWEATHERMAP_API_KEY);
     getLocation().then((value) {
       _currentWeatherLocation = value;
-      update();
-      return true;
+      _updateWeather().then((value) {
+        _completer.complete();
+      }).onError((error, stackTrace) {
+        _completer.completeError(error!, stackTrace);
+      });
+      return;
     }).onError(
       (error, stackTrace) {
-        print(error);
-        _currentWeatherLocation = WeatherLocation(
-          latitude: 59.327,
-          longitude: 18.068,
-          shortName: "Stockholm",
-          longName: "Riksgatan 1, 100 12 Stockholm",
-        );
-        _completer.completeError(error!, stackTrace);
-        return false;
+        if (favorites.isNotEmpty) {
+          _currentWeatherLocation = favorites[0];
+          _updateWeather().then((value) {
+            _completer.complete();
+          }).onError((error, stackTrace) {
+            _completer.completeError(error!, stackTrace);
+          });
+          return;
+        } else {
+          _completer.completeError(error!, stackTrace);
+        }
       },
     );
     getSavedFavorites().then((value) {
@@ -54,7 +60,7 @@ class WeatherProvider extends ChangeNotifier {
     });
     // Update every 10 minutes
     Timer.periodic(const Duration(minutes: 10), (timer) {
-      update();
+      _updateWeather();
     });
   }
 
@@ -75,11 +81,41 @@ class WeatherProvider extends ChangeNotifier {
     return groupedForecast;
   }
 
-  void update() async {
-    if (_currentWeatherLocation == null) {
-      return;
-    }
+  void reload() async {
     _completer = Completer();
+    notifyListeners();
+    try {
+      await _updateLocation();
+      await _updateWeather();
+      _completer.complete();
+    } catch (e) {
+      _completer.completeError(e);
+    }
+    notifyListeners();
+  }
+
+  Future<void> updateWeather() async {
+    try {
+      await _updateWeather();
+    } catch (e) {
+      return Future.error(e);
+    }
+    notifyListeners();
+  }
+
+  Future<void> updateLocation() async {
+    try {
+      await _updateLocation();
+    } catch (e) {
+      return Future.error(e);
+    }
+    notifyListeners();
+  }
+
+  Future<void> _updateWeather() async {
+    if (_currentWeatherLocation == null) {
+      return Future.error("No location");
+    }
     _lastUpdated = DateTime.now();
     List<WeatherData> forecast;
     try {
@@ -87,28 +123,20 @@ class WeatherProvider extends ChangeNotifier {
       forecast = await _openWeatherMap.getWeatherForecast(_currentWeatherLocation!, 40);
     } catch (e) {
       print(e);
-      _completer.completeError(e);
-      return;
+
+      return Future.error(e);
     }
     weatherForecast = groupForecastByDay(forecast);
-
-    if (!_completer.isCompleted) {
-      _completer.complete();
-    }
-    notifyListeners();
   }
 
-  Future<bool> updateLocation() async {
+  Future<void> _updateLocation() async {
     try {
-      _completer = Completer();
       final location = await getLocation();
       _currentWeatherLocation = location;
-      update();
-      return true;
+      return;
     } catch (e) {
       print(e);
-      _completer.completeError(e);
-      return false;
+      return Future.error(e);
     }
   }
 
@@ -186,6 +214,6 @@ class WeatherProvider extends ChangeNotifier {
 
   void setWeatherLocation(WeatherLocation location) {
     _currentWeatherLocation = location;
-    update();
+    _updateWeather();
   }
 }
