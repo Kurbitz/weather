@@ -106,7 +106,6 @@ Future<WeatherLocation> getLocation() async {
     placemark = await _determinePlace(position);
   } catch (e) {
     print(e);
-    return Future.error(e);
   }
 
   return WeatherLocation(
