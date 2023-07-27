@@ -108,8 +108,8 @@ class WeatherLocation {
     required double longitude,
     required this.shortName,
     required this.longName,
-  })  : latitude = latitude.toStringAsFixed(3),
-        longitude = longitude.toStringAsFixed(3);
+  })  : latitude = latitude.toStringAsFixed(2),
+        longitude = longitude.toStringAsFixed(2);
 
   factory WeatherLocation.fromJson(Map<String, dynamic> json) {
     return WeatherLocation(
