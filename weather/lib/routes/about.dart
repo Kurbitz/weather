@@ -1,7 +1,6 @@
 import "package:flutter/material.dart";
-import "package:weather/provider.dart";
-import "package:provider/provider.dart";
 import "package:go_router/go_router.dart";
+import "package:weather/weather_animation.dart";
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
@@ -21,15 +20,68 @@ class AboutPage extends StatelessWidget {
             onPressed: () => context.go("/"),
           ),
         ),
-        body: const Center(
+        body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("Weather"),
-              SizedBox(
-                height: 20,
+              FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Icon(
+                        Icons.wb_sunny,
+                        size: 50,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    Text(
+                      "Weather",
+                      style: Theme.of(context).textTheme.displaySmall,
+                    ),
+                  ],
+                ),
               ),
-              Text("Version 1.0.0"),
+              const ListTile(
+                leading: Icon(Icons.info),
+                title: Text("Version"),
+                subtitle: Text("1.0.0"),
+              ),
+              const ListTile(
+                leading: Icon(Icons.person),
+                title: Text("Created by"),
+                subtitle: Text("github.com/Kurbitz"),
+              ),
+              const ListTile(
+                leading: Icon(Icons.attribution),
+                title: Text("Attribution"),
+              ),
+              Column(
+                children: [
+                  Image.asset(
+                    "assets/openweather.png",
+                    width: 200,
+                  ),
+                  Text(
+                    "Weather data provided by OpenWeather",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  const WeatherAnimation(
+                      assetPath: "assets/weather/fill/clear-day.json", width: 100, height: 100),
+                  Text(
+                    "Meteocons by Bas Milius",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
             ],
           ),
         ),
