@@ -215,5 +215,6 @@ class WeatherProvider extends ChangeNotifier {
   void setWeatherLocation(WeatherLocation location) {
     _currentWeatherLocation = location;
     _updateWeather();
+    notifyListeners();
   }
 }
