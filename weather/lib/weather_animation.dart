@@ -2,7 +2,12 @@ import "package:flutter/material.dart";
 import "package:lottie/lottie.dart";
 import "package:weather/weather.dart";
 
+/// A widget that displays a weather animation.
+/// The animations used a made by Bas Milius and can be found here:
+/// https://bas.dev/work/meteocons
+/// Lottie is used to display the animations.
 class WeatherAnimation extends StatelessWidget {
+  /// Creates a new WeatherAnimation
   const WeatherAnimation({
     super.key,
     required this.assetPath,
@@ -11,10 +16,20 @@ class WeatherAnimation extends StatelessWidget {
     this.text,
     this.fit,
   });
+
+  /// The path to the animation asset.
   final String assetPath;
+
+  /// The width of the animation.
   final double width;
+
+  /// The height of the animation.
   final double height;
+
+  /// Optional text widget to display below the animation.
   final Widget? text;
+
+  /// Optional BoxFit to determine how the animation should be fitted into the available space.
   final BoxFit? fit;
 
   @override
@@ -35,6 +50,11 @@ class WeatherAnimation extends StatelessWidget {
     );
   }
 
+  // A factory constructor is used to create a new WeatherAnimation based on the weather data.
+  // This is done to make it easier to create a WeatherAnimations, since the user doesn't have to
+  // worry about the asset path.
+  /// Creates a new WeatherAnimation based on the given [weatherData].
+  /// Displays different animations during the day and night using the [isDay] parameter.
   factory WeatherAnimation.byWeatherData(
       WeatherData weatherData, double width, double height, bool isDay,
       [Widget? text, BoxFit? fit]) {
@@ -201,6 +221,8 @@ class WeatherAnimation extends StatelessWidget {
         assetPath: assetPath, width: width, height: height, text: text, fit: fit);
   }
 
+  /// Creates a new WeatherAnimation based on the given [beufort].
+  /// Displays different animations based on the beufort scale.
   factory WeatherAnimation.byBeufort(int beufort, double width, double height,
       [Widget? text, BoxFit? fit]) {
     String assetPath;
