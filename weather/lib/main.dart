@@ -22,13 +22,13 @@ void main() {
   runApp(
     ChangeNotifierProvider(
       create: (context) => WeatherProvider(),
-      child: const MyApp(),
+      child: const WeatherApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class WeatherApp extends StatelessWidget {
+  const WeatherApp({super.key});
 
   // This widget is the root of your application.
   @override
