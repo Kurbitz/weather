@@ -122,16 +122,18 @@ class WeatherLocation {
   final String shortName;
   final String longName;
 
-  // Rounding to 2 decimal points makes comparing locations easier since locations are not always
+  // Rounding to 3 decimal points makes comparing locations easier since locations are not always
   // returned with the same precision. Not rounding can result in the same location being added
   // multiple times to the favorites list causing confusion for the user.
+  // Ideally, some sort of fuzzy matching would be used to compare locations, but that is outside
+  // the scope of this project.
   WeatherLocation({
     required double latitude,
     required double longitude,
     required this.shortName,
     required this.longName,
-  })  : latitude = latitude.toStringAsFixed(2),
-        longitude = longitude.toStringAsFixed(2);
+  })  : latitude = latitude.toStringAsFixed(3),
+        longitude = longitude.toStringAsFixed(3);
 
   factory WeatherLocation.fromJson(Map<String, dynamic> json) {
     return WeatherLocation(
