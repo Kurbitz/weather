@@ -13,14 +13,20 @@ class WeatherPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Using a FutureBuilder allows us to wait for the WeatherProvider to be
+    // ready before building the UI and to handle errors.
     return FutureBuilder(
         future: Future.value(context.select((WeatherProvider p) => p.onReady)),
         builder: (context, snapshot) {
+          // If the snapshot is not ready, display a loading indicator.
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
+          // If the snapshot has an error, display an error message.
+          // TODO: Read up on the Android guidelines for error messages, especially
+          // regarding how to communicate permission errors.
           if (snapshot.hasError) {
             return Center(
               child: Column(
@@ -47,6 +53,8 @@ class WeatherPage extends StatelessWidget {
                       backgroundColor: Theme.of(context).colorScheme.error,
                     ),
                     onPressed: () {
+                      // This will trigger a reload of the WeatherProvider, which creates
+                      // a new Completer and Future.
                       context.read<WeatherProvider>().reload();
                     },
                     child: const Text("Retry"),
@@ -56,6 +64,7 @@ class WeatherPage extends StatelessWidget {
             );
           }
 
+          // If the snapshot is ready, build the UI.
           final location = context.select((WeatherProvider p) => p.location)!;
           final weatherData = context.select((WeatherProvider p) => p.currentWeather)!;
           final weatherForecast = context.select((WeatherProvider p) => p.weatherForecast)!;
@@ -69,7 +78,7 @@ class WeatherPage extends StatelessWidget {
                 children: [
                   Flexible(
                     child: Text(
-                      location.shortName,
+                      location.shortName, // Display the name of the current location in the appbar.
                       style: const TextStyle(
                         fontSize: 22,
                       ),
@@ -80,6 +89,7 @@ class WeatherPage extends StatelessWidget {
                 ],
               ),
               actions: [
+                // Icon button to toggle the favorite status of the current location.
                 IconButton(
                   tooltip: locationIsFavorite ? "Remove from favorites" : "Add to favorites",
                   icon: locationIsFavorite
@@ -92,10 +102,13 @@ class WeatherPage extends StatelessWidget {
                     context.read<WeatherProvider>().toggleFavorite();
                   },
                 ),
+                // GPS icon button to update the current location.
                 IconButton(
                   icon: const Icon(Icons.my_location),
                   tooltip: "Get current location",
                   onPressed: () => {
+                    // Update the location and show a SnackBar giving feedback on whether the
+                    // update was successful or not.
                     Provider.of<WeatherProvider>(context, listen: false).updateLocation().then(
                       (_) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -124,6 +137,8 @@ class WeatherPage extends StatelessWidget {
                 currentLocation: location,
               ),
             ),
+            // Display the content in a tab controller with 2 tabs, one for the current weather
+            // and one for the 5-day forecast.
             body: DefaultTabController(
               length: 2,
               child: Flex(
@@ -159,6 +174,7 @@ class WeatherPage extends StatelessWidget {
   }
 }
 
+/// A drawer that displays a list of favorite locations [favorites].
 class WeatherDrawer extends StatelessWidget {
   const WeatherDrawer({
     super.key,
@@ -166,11 +182,15 @@ class WeatherDrawer extends StatelessWidget {
     required this.currentLocation,
   });
 
+  /// The list of favorite locations.
   final List<WeatherLocation> favorites;
+
+  /// The current location, used to highlight the current location in the list of favorites.
   final WeatherLocation currentLocation;
 
   @override
   Widget build(BuildContext context) {
+    // Wrapping the widget in a SafeArea prevents the drawer from being drawn behind the status bar.
     return SafeArea(
       child: ListView(
         children: [
@@ -195,6 +215,7 @@ class WeatherDrawer extends StatelessWidget {
               ),
             ),
           ),
+          // Show the current location at the top of the list.
           ListTile(
             title: Text(
               "Current location",
@@ -214,6 +235,7 @@ class WeatherDrawer extends StatelessWidget {
               ],
             ),
           ),
+          // Show the list of all saved favorites.
           Wrap(
             children: [
               ...favorites
@@ -256,12 +278,14 @@ class WeatherDrawer extends StatelessWidget {
             ],
           ),
           const Divider(),
+          // Show a button to clear all favorites.
           ListTile(
             title: const Text("Clear"),
             leading: const Icon(Icons.clear),
             onTap: () {
               showDialog(
                 context: context,
+                // Show a confirmation dialog before clearing all favorites.
                 builder: (context) => AlertDialog(
                   title: const Text("Clear favorites"),
                   content: const Text("Are you sure you want to clear all favorites?"),
@@ -298,6 +322,9 @@ class WeatherDrawer extends StatelessWidget {
   }
 }
 
+/// The current weather.
+/// Displays the current weather and some details about the weather in [weatherData].
+// Used as the first tab in the WeatherPage.
 class Weather extends StatelessWidget {
   const Weather({
     super.key,
@@ -310,20 +337,24 @@ class Weather extends StatelessWidget {
   Widget build(BuildContext context) {
     var lastUpdated = context.select((WeatherProvider p) => p.lastUpdatedString);
 
+    // Wrapping the content in a RefreshIndicator allows the user to refresh the weather
+    // by pulling down on the screen.
     return RefreshIndicator(
       onRefresh: () {
         return Future.delayed(
           const Duration(seconds: 1),
           () {
-            context.read<WeatherProvider>().updateWeather().onError((error, stackTrace) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text("Error updating weather"),
-                  backgroundColor: Theme.of(context).colorScheme.error,
-                ),
-              );
-            });
-            return;
+            context.read<WeatherProvider>().updateWeather().onError(
+              (error, stackTrace) {
+                // Show a SnackBar if the update fails.
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text("Error updating weather"),
+                    backgroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                );
+              },
+            );
           },
         );
       },
@@ -405,6 +436,11 @@ class Weather extends StatelessWidget {
   }
 }
 
+/// Details about the current weather in [weatherData].
+/// Displays the wind speed, wind direction, rain volume, probability of precipitation,
+/// Beaufort wind force, humidity and pressure. The last 3 are displayed as animated icons.
+/// [use3hRain] determines whether to use the 3h rain volume or the 1h rain volume. The 3h rain
+/// volume is only available in the 5-day forecast.
 class Details extends StatelessWidget {
   const Details({
     super.key,
@@ -412,7 +448,10 @@ class Details extends StatelessWidget {
     this.use3hRain = false,
   });
 
+  /// The weather data to display details about.
   final WeatherData weatherData;
+
+  /// Use 3h rain volume instead of 1h rain volume.
   final bool use3hRain;
 
   @override
@@ -588,30 +627,39 @@ class Details extends StatelessWidget {
   }
 }
 
+/// The 5-day forecast, displayed as a list of [DailyForecast]s.
+/// Each [DailyForecast] displays the weather for a single day.
+/// The [weatherForecast] is a list of lists of [WeatherData]s, where each inner list
+/// contains the weather data for a single day.
 class Forecast extends StatelessWidget {
   const Forecast({
     super.key,
     required this.weatherForecast,
   });
 
+  // TODO: Use a better data structure for weatherForecast.
+  /// The weather forecast, a list of lists of [WeatherData]s.
   final List<List<WeatherData>> weatherForecast;
 
   @override
   Widget build(BuildContext context) {
+    // Wrapping the content in a RefreshIndicator allows the user to refresh the weather
+    // by pulling down on the screen.
     return RefreshIndicator(
       onRefresh: () {
         return Future.delayed(
           const Duration(seconds: 1),
           () {
-            context.read<WeatherProvider>().updateWeather().onError((error, stackTrace) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text("Error updating weather"),
-                  backgroundColor: Theme.of(context).colorScheme.error,
-                ),
-              );
-            });
-            return;
+            context.read<WeatherProvider>().updateWeather().onError(
+              (error, stackTrace) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text("Error updating weather"),
+                    backgroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                );
+              },
+            );
           },
         );
       },
@@ -630,6 +678,8 @@ class Forecast extends StatelessWidget {
   }
 }
 
+/// A single day in the 5-day forecast.
+/// Displays the weather for a single day in [dailyData].
 class DailyForecast extends StatelessWidget {
   const DailyForecast({
     super.key,
@@ -640,6 +690,8 @@ class DailyForecast extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine the name of the day to display.
+    // If the date is today or tomorrow, display "Today" or "Tomorrow" instead of the day name.
     final date = dailyData[0].date;
     final now = DateTime.now();
     String dayName;
@@ -660,6 +712,7 @@ class DailyForecast extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Display the day name.
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -669,6 +722,8 @@ class DailyForecast extends StatelessWidget {
                 ),
               ],
             ),
+            // Display the weather for each 3-hour interval in the day.
+            // Using a ListView.separated allows us to add dividers between the items.
             ListView.separated(
               itemCount: dailyData.length,
               shrinkWrap: true,
@@ -743,6 +798,7 @@ class DailyForecast extends StatelessWidget {
   }
 }
 
+/// Displays the sunrise and sunset times in [weatherData].
 class SunInfo extends StatelessWidget {
   const SunInfo({
     super.key,
@@ -752,14 +808,25 @@ class SunInfo extends StatelessWidget {
     this.direction = Axis.vertical,
     this.padding = const EdgeInsets.all(8.0),
   });
+
+  /// The weather data to display sunrise and sunset times for.
   final WeatherData weatherData;
+
+  /// The width of the weather animation icons.
   final double iconWidth;
+
+  /// The height of the weather animation icons.
   final double iconHeight;
+
+  /// The direction of the layout. Defaults to vertical.
   final Axis direction;
+
+  /// The padding around the content.
   final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
+    // Display the sunrise and sunset times, changing the layout depending on the direction.
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
