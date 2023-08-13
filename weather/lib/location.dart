@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import "package:geocoding/geocoding.dart";
 import 'package:weather/weather.dart';
 
+// Snippet from https://pub.dev/packages/geolocator
 /// Determine the current position of the device.
 ///
 /// When the location services are not enabled or permissions
@@ -44,12 +45,18 @@ Future<Position> _determinePosition() async {
   return await Geolocator.getCurrentPosition();
 }
 
+/// Determine the place of the device using the [position].
 Future<Placemark> _determinePlace(Position position) async {
   List<Placemark> placemarks =
       await placemarkFromCoordinates(position.latitude, position.longitude);
   return placemarks[0];
 }
 
+/// Returns a longer, more descriptive name of the location.
+/// If the [placemarkLocation] is null, the coordinates are used instead.
+/// If the [placemarkLocation] is not null, the street, postal code and administrative area are used.
+// TODO: This combination of data works for Sweden, but might not work for other countries. More
+// testing is needed with different countries.
 String _getLongName(Placemark? placemarkLocation, Position position) {
   if (placemarkLocation != null) {
     if (placemarkLocation.street != null &&
@@ -65,6 +72,8 @@ String _getLongName(Placemark? placemarkLocation, Position position) {
   return coordinatesToDegree(position.latitude, position.longitude);
 }
 
+/// Returns a short name of the location.
+/// Will return null if no short name can be figured out.
 String? _getShortName(Placemark? placemarkLocation) {
   if (placemarkLocation != null) {
     if (placemarkLocation.subLocality != null && placemarkLocation.subLocality!.isNotEmpty) {
@@ -79,6 +88,8 @@ String? _getShortName(Placemark? placemarkLocation) {
   return null;
 }
 
+/// Converts the [latitude] and [longitude] to a degree format.
+/// Example: 59.328, 18.067 -> 59°19'40"N 18°4'1.2"E
 String coordinatesToDegree(double latitude, double longitude) {
   final latDirection = latitude.isNegative ? "S" : "N";
   final lonDirection = longitude.isNegative ? "W" : "E";
@@ -94,6 +105,8 @@ String coordinatesToDegree(double latitude, double longitude) {
   return "$latDegree°$latMinute'$latSecond\"$latDirection $lonDegree°$lonMinute'$lonSecond\"$lonDirection";
 }
 
+/// Returns a [WeatherLocation] based on the current location of the device.
+/// If the location cannot be determined, an error is returned.
 Future<WeatherLocation> getLocation() async {
   Position position;
   Placemark? placemark;
@@ -108,6 +121,9 @@ Future<WeatherLocation> getLocation() async {
   try {
     placemark = await _determinePlace(position);
   } catch (e) {
+    // If the location cannot be determined, the app will still work, but the location will be
+    // displayed as the coordinates instead.
+    // Don't throw an error here, since the location name is not critical for the app to work.
     if (kDebugMode) {
       print(e);
     }
@@ -116,6 +132,9 @@ Future<WeatherLocation> getLocation() async {
   return WeatherLocation(
     latitude: position.latitude,
     longitude: position.longitude,
+    // TODO: Coordinates are used as the short name if the location cannot be determined. This is
+    // not ideal, as it is not very descriptive and might be too long for some widgets.
+    // Come up with a better solution.
     shortName:
         _getShortName(placemark) ?? coordinatesToDegree(position.latitude, position.longitude),
     longName: _getLongName(placemark, position),
