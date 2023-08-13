@@ -5,6 +5,8 @@ import 'package:weather/routes/home.dart';
 import 'package:weather/routes/about.dart';
 import 'package:go_router/go_router.dart';
 
+// The GoRouter is used to handle navigation between pages.
+// It's probably overkill in this app since there are only two pages, but I wanted to try it out.
 final _router = GoRouter(
   routes: [
     GoRoute(
@@ -18,8 +20,10 @@ final _router = GoRouter(
   ],
 );
 
+// The entry point of the app.
 void main() {
   runApp(
+    // The ChangeNotifierProvider is used to provide the WeatherProvider to the entire app.
     ChangeNotifierProvider(
       create: (context) => WeatherProvider(),
       child: const WeatherApp(),
@@ -27,12 +31,16 @@ void main() {
   );
 }
 
+/// The main widget of the app.
 class WeatherApp extends StatelessWidget {
   const WeatherApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // The MaterialApp.router is used to provide the GoRouter to the entire app.
+    // The themeMode is set to system to allow the app to change between light and dark mode
+    // depending on the device's settings.
+    // Minimal theme data is provided since the app uses Material 3.
     return MaterialApp.router(
       title: 'Weather',
       theme: ThemeData(
