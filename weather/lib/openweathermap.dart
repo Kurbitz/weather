@@ -3,12 +3,18 @@ import "dart:convert";
 import "package:flutter/foundation.dart";
 import "package:weather/weather.dart";
 
+/// OpenWeatherMap API wrapper.
+/// Provides an interface for getting weather data from the OpenWeatherMap API.
 class OpenWeatherMap {
   final String _apiKey;
   final String _host = "api.openweathermap.org";
 
+  /// Creates a new OpenWeatherMap instance with the given [apiKey].
   OpenWeatherMap(this._apiKey);
 
+  /// Used to get the current weather for the given [location].
+  /// Returns a [WeatherData] object if the request was successful.
+  /// Throws a Future.error if the request was unsuccessful.
   Future<WeatherData> getCurrentWeather(WeatherLocation location) async {
     final uri = Uri(
       scheme: "https",
@@ -38,6 +44,11 @@ class OpenWeatherMap {
     }
   }
 
+  /// Used to get location information for the given [latitude] and [longitude].
+  /// Returns a string with the name of the location if the request was successful.
+  /// Throws a Future.error if the request was unsuccessful.
+  // This is not used in the app right now, but it might be useful in the future instead of
+  // using the Geocoding package.
   Future<String> getReverseGeocoding(double latitude, double longitude) async {
     final uri = Uri(
       scheme: "https",
@@ -68,6 +79,10 @@ class OpenWeatherMap {
     }
   }
 
+  /// Used to get the 5 day weather forecast for the given [location].
+  /// Returns a list of [WeatherData] objects if the request was successful.
+  /// Throws a Future.error if the request was unsuccessful.
+  /// The [count] parameter is used to specify how many data points should be returned.
   Future<List<WeatherData>> getWeatherForecast(WeatherLocation location, int count) async {
     final uri = Uri(
       scheme: "https",
