@@ -14,7 +14,7 @@ class WeatherPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.value(context.select((WeatherProvider p) => p.isReady)),
+        future: Future.value(context.select((WeatherProvider p) => p.onReady)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(

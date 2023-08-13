@@ -11,7 +11,8 @@ import "package:shared_preferences/shared_preferences.dart";
 class WeatherProvider extends ChangeNotifier {
   Completer _completer = Completer();
 
-  Future<dynamic> get isReady => _completer.future;
+  // When this future completes, the WeatherProvider is ready to be used.
+  Future<dynamic> get onReady => _completer.future;
 
   WeatherLocation? _currentWeatherLocation;
 
