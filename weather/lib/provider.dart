@@ -8,30 +8,61 @@ import "package:weather/weather.dart";
 import "package:weather/openweathermap.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
+/// Contains the state of the app.
+// Using a Provider to manage the state of the app makes it easier to share the state between
+// different widgets. I could probably make this app work without using a Provider, but I wanted to
+// try it out as it seems like a good way to manage the state of the app. It also makes it easier
+// to add new features to the app in the future since state is centralized in one place.
 class WeatherProvider extends ChangeNotifier {
+  // Used to notify the app when the WeatherProvider is ready to be used.
   Completer _completer = Completer();
 
-  // When this future completes, the WeatherProvider is ready to be used.
+  /// When this future completes, the WeatherProvider is ready to be used.
   Future<dynamic> get onReady => _completer.future;
 
+  /// The current location
   WeatherLocation? _currentWeatherLocation;
-
+  // Public getter is used to prevent accidental mutation
   WeatherLocation? get location => _currentWeatherLocation;
 
+  /// The key used to store the favorites in the shared preferences.
   static const _favoritesKey = "favorites";
+
+  /// The last time the weather was updated.
   DateTime _lastUpdated;
+
+  /// Used to format the last updated time.
   final _formatter = DateFormat("d MMMM HH:mm");
+
+  /// The current weather.
+  // TODO: Add getter and make this private.
   WeatherData? currentWeather;
+
+  /// The weather forecast, grouped by day
+  // TODO: Encapsulate this in a class instead of using a list of lists.
   List<List<WeatherData>>? weatherForecast;
 
+  /// The OpenWeatherMap API instance.
   late OpenWeatherMap _openWeatherMap;
+
+  /// The list of favorite locations.
   List<WeatherLocation> favorites = [];
 
+  /// The last time the weather was updated as a string.
   String get lastUpdatedString => _formatter.format(_lastUpdated);
 
+  /// Returns true if the current location is a favorite.
   bool get locationIsFavorite => favorites.contains(_currentWeatherLocation);
 
+  /// Creates a new WeatherProvider instance.
+  /// The WeatherProvider is ready to be used when the [onReady] future completes.
+  /// The WeatherProvider will update the weather every 10 minutes.
+  /// If the location can't be determined, the first favorite location will be used instead.
+  /// If the location can't be determined and there are no favorite locations, the completer will
+  /// complete with an error.
+  /// If the weather can't be updated, the completer will complete with an error.
   WeatherProvider() : _lastUpdated = DateTime.now() {
+    // Initialize the OpenWeatherMap API instance.
     _openWeatherMap = OpenWeatherMap(Env.OPENWEATHERMAP_API_KEY);
     getLocation().then((value) {
       _currentWeatherLocation = value;
@@ -56,6 +87,7 @@ class WeatherProvider extends ChangeNotifier {
         }
       },
     );
+    // Load favorites
     getSavedFavorites().then((value) {
       favorites = value;
     });
@@ -65,6 +97,7 @@ class WeatherProvider extends ChangeNotifier {
     });
   }
 
+  /// Groups the given [forecast] by day.
   List<List<WeatherData>> groupForecastByDay(List<WeatherData> forecast) {
     final groupedForecast = <List<WeatherData>>[];
     var currentDay = forecast[0].date.day;
@@ -82,12 +115,16 @@ class WeatherProvider extends ChangeNotifier {
     return groupedForecast;
   }
 
+  /// Reloads the location and weather.
   void reload() async {
+    // Reset completer as the entire state of the app is being reloaded.
     _completer = Completer();
     notifyListeners();
     try {
       await _updateLocation();
       await _updateWeather();
+      // If location and weather was updated successfully, complete the completer, signaling that
+      // the WeatherProvider is ready to be used.
       _completer.complete();
     } catch (e) {
       _completer.completeError(e);
@@ -95,6 +132,13 @@ class WeatherProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // The following methods are split into public and private methods.
+  // This is because the public methods are used by widgets to update the state of the app and
+  // need to call notifyListeners() to notify the app that the state has changed.
+  // The private methods are used by the WeatherProvider itself and should not call notifyListeners()
+  // as this would cause the app to rebuild unnecessarily.
+
+  /// Public method used to update the weather.
   Future<void> updateWeather() async {
     try {
       await _updateWeather();
@@ -104,6 +148,7 @@ class WeatherProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Public method used to update the location.
   Future<void> updateLocation() async {
     try {
       await _updateLocation();
@@ -113,6 +158,7 @@ class WeatherProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Updates the weather.
   Future<void> _updateWeather() async {
     if (_currentWeatherLocation == null) {
       return Future.error("No location");
@@ -132,6 +178,7 @@ class WeatherProvider extends ChangeNotifier {
     weatherForecast = groupForecastByDay(forecast);
   }
 
+  /// Updates the location.
   Future<void> _updateLocation() async {
     try {
       final location = await getLocation();
@@ -145,6 +192,7 @@ class WeatherProvider extends ChangeNotifier {
     }
   }
 
+  /// Toggles the favorite status of the current location.
   void toggleFavorite() {
     if (_currentWeatherLocation == null) {
       return;
@@ -157,9 +205,11 @@ class WeatherProvider extends ChangeNotifier {
     }
   }
 
+  /// Returns a list of saved favorites from the shared preferences.
   Future<List<WeatherLocation>> getSavedFavorites() async {
     final prefs = await SharedPreferences.getInstance();
     List<String> savedFavorites;
+    // If the favorites key doesn't exist, set savedFavorites to an empty list.
     try {
       savedFavorites = prefs.getStringList(_favoritesKey) ?? [];
     } catch (e) {
@@ -168,10 +218,13 @@ class WeatherProvider extends ChangeNotifier {
       }
       savedFavorites = [];
     }
+    // Convert the json strings to WeatherLocation objects.
     return savedFavorites.map((e) => WeatherLocation.fromJson(jsonDecode(e))).toList();
   }
 
-  Future<bool> favoritesAreSynced() async {
+  /// Returns true if the favorites in the shared preferences are the same as the favorites in memory.
+  /// Returns false if the favorites are not the same.
+  Future<bool> _favoritesAreSynced() async {
     final savedFavorites = await getSavedFavorites();
 
     if (savedFavorites.length != favorites.length) {
@@ -186,32 +239,37 @@ class WeatherProvider extends ChangeNotifier {
     return true;
   }
 
-  void saveFavorites() async {
+  /// Saves the favorites to the shared preferences.
+  void _saveFavorites() async {
     final prefs = await SharedPreferences.getInstance();
+    // Convert the WeatherLocation objects to json strings.
     final favoritesJson = favorites.map((e) => jsonEncode(e.toJson())).toList();
     prefs.setStringList(_favoritesKey, favoritesJson);
   }
 
+  /// Adds the given [location] to the favorites.
   void addFavorite(WeatherLocation location) async {
-    if (!await favoritesAreSynced()) {
+    if (!await _favoritesAreSynced()) {
       favorites = await getSavedFavorites();
     }
 
     favorites = [...favorites, location];
 
-    saveFavorites();
+    _saveFavorites();
     notifyListeners();
   }
 
+  /// Removes the given [location] from the favorites.
   void removeFavorite(WeatherLocation location) async {
-    if (!await favoritesAreSynced()) {
+    if (!await _favoritesAreSynced()) {
       favorites = await getSavedFavorites();
     }
     favorites = favorites.where((element) => element != location).toList();
-    saveFavorites();
+    _saveFavorites();
     notifyListeners();
   }
 
+  /// Clears all favorites from the shared preferences.
   void clearFavorites() async {
     favorites = [];
     final prefs = await SharedPreferences.getInstance();
@@ -219,6 +277,8 @@ class WeatherProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Sets the current location to the given [location].
+  /// This will also update the weather.
   void setWeatherLocation(WeatherLocation location) {
     _currentWeatherLocation = location;
     _updateWeather();
