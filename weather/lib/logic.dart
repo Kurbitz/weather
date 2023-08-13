@@ -1,4 +1,4 @@
-// Converts meters per second to Beaufort scale (0-12) which is used to describe wind speed
+/// Converts meters per second to Beaufort scale (0-12) which is used to describe wind speed
 int metersPerSecondToBeaufort(double speed) {
   if (speed < 0.5 && speed >= 0) {
     return 0;
@@ -31,7 +31,7 @@ int metersPerSecondToBeaufort(double speed) {
   }
 }
 
-// Converts a timestamp to a string of the form "HH-hh"  where HH is the start hour and hh is the end hour which is HH + span
+/// Converts a timestamp to a string of the form "HH-hh"  where HH is the start hour and hh is the end hour which is HH + span
 String timestampToHourSpan(int timestamp, int span) {
   var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
   var hour = date.hour;
