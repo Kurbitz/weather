@@ -152,6 +152,7 @@ class WeatherProvider extends ChangeNotifier {
   Future<void> updateLocation() async {
     try {
       await _updateLocation();
+      await _updateWeather();
     } catch (e) {
       return Future.error(e);
     }
