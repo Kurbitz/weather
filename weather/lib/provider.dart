@@ -1,6 +1,6 @@
 import "dart:async";
 import "dart:convert";
-import "package:flutter/material.dart";
+import "package:flutter/foundation.dart";
 import "package:weather/env/env.dart";
 import "package:weather/location.dart";
 import "package:intl/intl.dart";
@@ -122,7 +122,9 @@ class WeatherProvider extends ChangeNotifier {
       currentWeather = await _openWeatherMap.getCurrentWeather(_currentWeatherLocation!);
       forecast = await _openWeatherMap.getWeatherForecast(_currentWeatherLocation!, 40);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
 
       return Future.error(e);
     }
@@ -135,7 +137,9 @@ class WeatherProvider extends ChangeNotifier {
       _currentWeatherLocation = location;
       return;
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       return Future.error(e);
     }
   }
@@ -158,7 +162,9 @@ class WeatherProvider extends ChangeNotifier {
     try {
       savedFavorites = prefs.getStringList(_favoritesKey) ?? [];
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       savedFavorites = [];
     }
     return savedFavorites.map((e) => WeatherLocation.fromJson(jsonDecode(e))).toList();

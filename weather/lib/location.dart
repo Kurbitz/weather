@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import "package:geocoding/geocoding.dart";
 import 'package:weather/weather.dart';
@@ -99,13 +100,17 @@ Future<WeatherLocation> getLocation() async {
   try {
     position = await _determinePosition();
   } catch (e) {
-    print(e);
+    if (kDebugMode) {
+      print(e);
+    }
     return Future.error(e);
   }
   try {
     placemark = await _determinePlace(position);
   } catch (e) {
-    print(e);
+    if (kDebugMode) {
+      print(e);
+    }
   }
 
   return WeatherLocation(

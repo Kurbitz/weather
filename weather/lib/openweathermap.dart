@@ -1,5 +1,6 @@
 import "dart:io";
 import "dart:convert";
+import "package:flutter/foundation.dart";
 import "package:weather/weather.dart";
 
 class OpenWeatherMap {
@@ -8,7 +9,6 @@ class OpenWeatherMap {
 
   OpenWeatherMap(this._apiKey);
 
-  // TODO: Add error handling
   Future<WeatherData> getCurrentWeather(WeatherLocation location) async {
     final uri = Uri(
       scheme: "https",
@@ -26,10 +26,14 @@ class OpenWeatherMap {
       final response = await HttpClient().getUrl(uri).then((request) => request.close());
       final responseBody = await response.transform(const Utf8Decoder()).join();
       final json = jsonDecode(responseBody);
-      print(json);
+      if (kDebugMode) {
+        print(json);
+      }
       return WeatherData.fromJson(json);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       rethrow;
     }
   }
@@ -57,7 +61,9 @@ class OpenWeatherMap {
       }
       return json[0]["name"];
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       rethrow;
     }
   }
@@ -87,7 +93,9 @@ class OpenWeatherMap {
 
       return WeatherData.fromForecastJson(json);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       rethrow;
     }
   }
