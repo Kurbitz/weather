@@ -2,11 +2,13 @@ import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:weather/weather_animation.dart";
 
+/// About page, displays information about the app.
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Wrap the page in a WillPopScope to handle the back button press.
     return WillPopScope(
       onWillPop: () async {
         context.go("/");
