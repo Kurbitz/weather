@@ -280,9 +280,9 @@ class WeatherProvider extends ChangeNotifier {
 
   /// Sets the current location to the given [location].
   /// This will also update the weather.
-  void setWeatherLocation(WeatherLocation location) {
+  Future<void> setWeatherLocation(WeatherLocation location) async {
     _currentWeatherLocation = location;
-    _updateWeather();
+    await _updateWeather();
     notifyListeners();
   }
 }
