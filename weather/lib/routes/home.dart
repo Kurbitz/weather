@@ -256,6 +256,7 @@ class WeatherDrawer extends StatelessWidget {
                         ),
                         tooltip: "Remove from favorites",
                         onPressed: () {
+                          // Show a confirmation dialog before removing the favorite.
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
