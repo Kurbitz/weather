@@ -1,6 +1,8 @@
 import 'package:weather/extentions.dart';
 import 'package:weather/logic.dart';
 
+/// Weather data model used to store weather data from the OpenWeatherMap API.
+/// The data is stored in a class to make it easier to work with.
 class WeatherData {
   final Weather weather;
   final Wind wind;
@@ -8,6 +10,8 @@ class WeatherData {
 
   final double temperature;
   final double feelsLike;
+
+  // Probability of precipitation is only available in the forecast data
   final double? probabilityOfPrecipitation;
   final int pressure;
   final int humidity;
@@ -30,6 +34,21 @@ class WeatherData {
     required this.sunset,
   });
 
+  /// Returns the date of the weather data.
+  DateTime get date => DateTime.fromMillisecondsSinceEpoch(timeStamp * 1000);
+
+  /// Returns the time of the sunrise.
+  DateTime get sunriseTime => DateTime.fromMillisecondsSinceEpoch(sunrise * 1000);
+
+  /// Returns the time of the sunset.
+  DateTime get sunsetTime => DateTime.fromMillisecondsSinceEpoch(sunset * 1000);
+
+  /// Returns true if the weather data is during the day.
+  bool get isDaytime => date.isAfterTimeOnly(sunriseTime) && date.isBeforeTimeOnly(sunsetTime);
+
+  /// Creates a new WeatherData instance from a JSON object.
+  /// The JSON structure is based on the OpenWeatherMap API
+  /// data/2.5/weather endpoint.
   factory WeatherData.fromJson(Map<String, dynamic> json) {
     return WeatherData(
       weather: Weather.fromJson(json["weather"][0]),
@@ -46,11 +65,9 @@ class WeatherData {
     );
   }
 
-  DateTime get date => DateTime.fromMillisecondsSinceEpoch(timeStamp * 1000);
-  DateTime get sunriseTime => DateTime.fromMillisecondsSinceEpoch(sunrise * 1000);
-  DateTime get sunsetTime => DateTime.fromMillisecondsSinceEpoch(sunset * 1000);
-  bool get isDaytime => date.isAfterTimeOnly(sunriseTime) && date.isBeforeTimeOnly(sunsetTime);
-
+  /// Creates a list of WeatherData instances from a JSON object.
+  /// The JSON structure is based on the OpenWeatherMap API
+  /// data/2.5/forecast endpoint.
   static List<WeatherData> fromForecastJson(Map<String, dynamic> json) {
     return List<WeatherData>.from(
       json["list"].map(
@@ -74,6 +91,7 @@ class WeatherData {
   }
 }
 
+/// Information about the weather.
 class Weather {
   final int id;
   final String main;
@@ -97,12 +115,16 @@ class Weather {
   }
 }
 
+/// Information about the location used to get the weather data.
 class WeatherLocation {
   final String latitude;
   final String longitude;
   final String shortName;
   final String longName;
 
+  // Rounding to 2 decimal points makes comparing locations easier since locations are not always
+  // returned with the same precision. Not rounding can result in the same location being added
+  // multiple times to the favorites list causing confusion for the user.
   WeatherLocation({
     required double latitude,
     required double longitude,
@@ -129,6 +151,9 @@ class WeatherLocation {
     };
   }
 
+  // Override the == operator to make it easier to compare WeatherLocation objects.
+  // We only care about the latitude and longitude, not the name, since the name is subject to
+  // change.
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -141,11 +166,13 @@ class WeatherLocation {
   int get hashCode => latitude.hashCode ^ longitude.hashCode ^ shortName.hashCode;
 }
 
+/// Information about the wind.
 class Wind {
   final double speed;
   final int direction;
 
   // Converts degrees to cardinal direction
+  // Based on:
   // http://snowfence.umn.edu/Components/winddirectionanddegrees.htm
   String get cardinalDirection {
     if (direction >= 348.75 || direction < 11.25) {
@@ -185,6 +212,7 @@ class Wind {
     }
   }
 
+  /// Returns the wind speed in Beaufort scale (0-12).
   int get beaufort => metersPerSecondToBeaufort(speed);
 
   Wind({
@@ -200,6 +228,7 @@ class Wind {
   }
 }
 
+/// Information about the rain.
 class Rain {
   final double volume_1h;
   final double volume_3h;
