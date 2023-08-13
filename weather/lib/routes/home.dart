@@ -618,7 +618,7 @@ class Details extends StatelessWidget {
                 ),
                 WeatherAnimation(
                   assetPath: weatherData.pressure > 1013
-                      ? "assets/weather/fill/pressure-low.json"
+                      ? "assets/weather/fill/pressure-high.json"
                       : "assets/weather/fill/pressure-low.json",
                   width: 100,
                   height: 100,
