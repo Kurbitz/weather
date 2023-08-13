@@ -1,16 +1,17 @@
-# weather
+# Weather app
 
-A new Flutter project.
+Written by Gustav Kånåhols as part of the 1DV535 course at Linnaeus University.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Building the application
+This project uses the envied package to manage the environment variables.
+To build the application you first need to generate the environment files.
+To do this, place a .env file in the root directory with the following contents:
+```
+OPENWEATHERMAP_API_KEY=<your api key>
+```
+Then run the following commands:
+```
+flutter pub get
+flutter pub run build_runner build
+```
+You can now build/run the application as usual (e.g. `flutter run`)
