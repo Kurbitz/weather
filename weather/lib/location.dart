@@ -65,7 +65,7 @@ String _getLongName(Placemark? placemarkLocation, Position position) {
   return coordinatesToDegree(position.latitude, position.longitude);
 }
 
-String? _getShortName(Placemark? placemarkLocation, Position position) {
+String? _getShortName(Placemark? placemarkLocation) {
   if (placemarkLocation != null) {
     if (placemarkLocation.subLocality != null && placemarkLocation.subLocality!.isNotEmpty) {
       return placemarkLocation.subLocality!;
@@ -116,8 +116,8 @@ Future<WeatherLocation> getLocation() async {
   return WeatherLocation(
     latitude: position.latitude,
     longitude: position.longitude,
-    shortName: _getShortName(placemark, position) ??
-        coordinatesToDegree(position.latitude, position.longitude),
+    shortName:
+        _getShortName(placemark) ?? coordinatesToDegree(position.latitude, position.longitude),
     longName: _getLongName(placemark, position),
   );
 }
