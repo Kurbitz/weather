@@ -256,7 +256,28 @@ class WeatherDrawer extends StatelessWidget {
                         ),
                         tooltip: "Remove from favorites",
                         onPressed: () {
-                          context.read<WeatherProvider>().removeFavorite(wl);
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text("Remove favorite"),
+                              content: Text("Remove ${wl.shortName} from favorites?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("Cancel"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    context.read<WeatherProvider>().removeFavorite(wl);
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("Remove"),
+                                ),
+                              ],
+                            ),
+                          );
                         },
                       ),
                       tileColor: currentLocation.shortName == wl.shortName
