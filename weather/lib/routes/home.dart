@@ -508,7 +508,7 @@ class Details extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: "${weatherData.wind.speed} m/s",
+                          text: "${weatherData.wind.speed.toStringAsFixed(1)} m/s",
                           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                 color: Theme.of(context).colorScheme.onPrimaryContainer,
                               ),
